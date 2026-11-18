@@ -47,7 +47,7 @@ workload shop
 - **Latency where your users are, measured.** `slo.p95 <= 200 ms from eu` is a rule, not a wish: an offer qualifies only with a measured p95 from the EU within 200 ms, and an offer with no measurement is excluded.
 - **Whose law reaches your data, and who holds the keys.** Offers declare the jurisdictions that reach their operator and who holds the encryption keys. A policy can deny a jurisdiction: an offer within its reach stays allowed only if *you* hold the keys, because then a court order yields ciphertext. Data can require customer-held keys outright.
 - **Answers with reasons.** Given offers (places software could run), the toolchain says which are allowed and, for every one that isn't, exactly why.
-- **A way in from what you have.** Importers turn `vendor-u.toml`, Docker Compose, Kubernetes manifests and Terraform into Bailiwick, marking every inferred requirement `TODO: confirm` with the line it came from.
+- **A way in from what you have.** Importers turn `fly.toml`, Docker Compose, Kubernetes manifests and Terraform into Bailiwick, marking every inferred requirement `TODO: confirm` with the line it came from.
 - **Answers for every provider that could ever exist.** `bailiwick prove` shows a program already satisfies GDPR, or that a pull request loosens no rule, for every possible offer, not just today's catalog. When the answer is no, it shows the exact offer that breaks it.
 - **Certificates an auditor checks offline.** `bailiwick certify` records every decision with the exact inputs behind it. The program built from the Lean proofs re-checks it, so an auditor needs neither your systems nor your word.
 - **Deterministic and auditable.** No dependencies, no network access. The same input gives byte-identical output, as JSON or Protobuf, and a conformance suite pins every verdict.
@@ -79,7 +79,7 @@ And the proofs are about the code you run, not just a model of it: the model is 
 ## Add it to your project
 
 ```sh
-bailiwick init            # writes bailiwick.bwk from your vendor-u.toml, Compose, Kubernetes or Terraform files
+bailiwick init            # writes bailiwick.bwk from your fly.toml, Compose, Kubernetes or Terraform files
 bailiwick explain bailiwick.bwk --catalog offers.bwk --policy gdpr
 ```
 
@@ -109,7 +109,7 @@ Each pack's header says what the law requires, what the pack enforces and what i
 ```sh
 terraform show -json plan.out > plan.json
 bailiwick check-plan bailiwick.bwk plan.json
-bailiwick check-plan bailiwick.bwk k8s/*.yaml --vendor vendor-e
+bailiwick check-plan bailiwick.bwk k8s/*.yaml --vendor aws
 ```
 
 A resource belongs to a service, job or data block by its `bailiwick` tag or label, or by having its name.
@@ -187,7 +187,7 @@ bailiwick explain app.bwk --catalog offers.bwk   # what is allowed, and why not
 bailiwick check-plan app.bwk plan.json           # hold a Terraform plan or k8s manifests to the rules
 bailiwick certify app.bwk --catalog offers.bwk   # a certificate of every decision
 bailiwick verify  cert.json app.bwk --catalog offers.bwk
-bailiwick import  terraform main.tf              # also: vendor-u, compose, k8s
+bailiwick import  terraform main.tf              # also: fly, compose, k8s
 bailiwick ir      app.bwk [--proto]              # canonical form, JSON or Protobuf
 bailiwick lsp                                    # language server over stdio
 ```

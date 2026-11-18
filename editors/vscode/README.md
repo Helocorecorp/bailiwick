@@ -176,7 +176,7 @@ The `bailiwick` binary the extension uses is also a command-line tool.
 bailiwick check   app.bwk [--policy org.bwk]     # check a file, as the editor does
 bailiwick fmt     app.bwk --write                # format in place
 bailiwick explain app.bwk --catalog offers.bwk   # which offers are allowed, and why not
-bailiwick import  terraform main.tf              # also: vendor-u, compose, k8s
+bailiwick import  terraform main.tf              # also: fly, compose, k8s
 bailiwick ir      app.bwk [--proto]              # the canonical form, as JSON or Protobuf
 ```
 
@@ -199,7 +199,7 @@ And a mistake reads like this:
 app.bwk:3:18: error: `GB` is a data-size unit; durations use ms, s, m, h or d
 ```
 
-`import` turns an existing `vendor-u.toml`, `docker-compose.yml`, Kubernetes manifest or Terraform file into a Bailiwick starting point. Every requirement it infers is marked `TODO: confirm`, with the line it came from, because only you know which of your current choices are actually requirements.
+`import` turns an existing `fly.toml`, `docker-compose.yml`, Kubernetes manifest or Terraform file into a Bailiwick starting point. Every requirement it infers is marked `TODO: confirm`, with the line it came from, because only you know which of your current choices are actually requirements.
 
 ---
 

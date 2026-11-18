@@ -37,11 +37,11 @@ jobs:
           cargo run -q -- explain examples/clinic-sovereign.bwk --catalog examples/catalog/all.bwk > /dev/null
       - name: Importers round-trip
         run: |
-          cargo run -q -- import vendor-u examples/import/vendor-u.toml > /tmp/vendor-u.bwk
+          cargo run -q -- import fly examples/import/fly.toml > /tmp/fly.bwk
           cargo run -q -- import compose examples/import/docker-compose.yml > /tmp/compose.bwk
           cargo run -q -- import k8s examples/import/k8s.yaml > /tmp/k8s.bwk
           cargo run -q -- import terraform examples/import/main.tf > /tmp/tf.bwk
-          for f in /tmp/vendor-u.bwk /tmp/compose.bwk /tmp/k8s.bwk /tmp/tf.bwk; do cargo run -q -- check "$f"; done
+          for f in /tmp/fly.bwk /tmp/compose.bwk /tmp/k8s.bwk /tmp/tf.bwk; do cargo run -q -- check "$f"; done
       - name: Editor grammar files are well-formed
         run: |
           python3 -c "import json; json.load(open('editors/vscode/package.json')); json.load(open('editors/vscode/language-configuration.json')); json.load(open('editors/tree-sitter-bailiwick/package.json'))"

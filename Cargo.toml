@@ -6,7 +6,6 @@ description = "Reference toolchain for the Bailiwick (BWK): parser, unit-aware t
 authors = ["Phantombyter"]
 license = "Apache-2.0"
 repository = "https://github.com/Helocorecorp/bailiwick"
-homepage = "https://github.com/Helocorecorp/bailiwick"
 readme = "README.md"
 keywords = ["dsl", "infrastructure", "data-residency", "compliance", "language-server"]
 categories = ["command-line-utilities", "development-tools", "parser-implementations"]

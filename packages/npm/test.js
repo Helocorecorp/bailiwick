@@ -20,7 +20,7 @@ r = cli("check-plan", "tests/fixtures/check-plan.bwk", "tests/fixtures/terraform
 assert.strictEqual(r.status, 1);
 assert.match(r.stdout, /FAIL aws_s3_bucket.backups/);
 
-r = cli("check-plan", "tests/fixtures/check-plan.bwk", "tests/fixtures/k8s-placed.yaml", "--vendor", "vendor-e");
+r = cli("check-plan", "tests/fixtures/check-plan.bwk", "tests/fixtures/k8s-placed.yaml", "--vendor", "aws");
 assert.match(r.stdout, /StatefulSet\/customers \(us-east-1\)/);
 
 r = cli("certify", "examples/clinic-sovereign.bwk", "--catalog", "examples/catalog/all.bwk", "--place", "api=e-de-he");
