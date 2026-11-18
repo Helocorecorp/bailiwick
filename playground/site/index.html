@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bailiwick Playground</title>
+<meta name="description" content="Write a Bailiwick program and see, as you type, where each part may legally run and why. The real toolchain, running in your browser.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #fbfaf9;
+    --panel: #ffffff;
+    --ink: #1b1b1f;
+    --muted: #6b6b75;
+    --line: #e6e3e0;
+    --accent: #e0262b;
+    --accent-soft: #fde8e8;
+    --ok: #18794e;
+    --ok-soft: #e3f4ea;
+    --warn: #9a6200;
+    --warn-soft: #fff3d6;
+    --code-bg: #f6f4f2;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121214;
+      --panel: #18181b;
+      --ink: #ececf0;
+      --muted: #9a9aa6;
+      --line: #2b2b31;
+      --accent: #ff4d4f;
+      --accent-soft: #3a1a1b;
+      --ok: #4cc38a;
+      --ok-soft: #13291e;
+      --warn: #f0b429;
+      --warn-soft: #2e2510;
+      --code-bg: #141417;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans);
+    display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--panel);
+  }
+  header svg { height: 26px; width: auto; flex: none; }
+  header h1 { font-size: 17px; margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1 1 260px; }
+  header a { color: var(--muted); font-size: 13.5px; text-decoration: none; }
+  header a:hover { color: var(--ink); }
+  main {
+    flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  section { min-height: 0; display: flex; flex-direction: column; }
+  section + section { border-left: 1px solid var(--line); }
+  .bar {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-bottom: 1px solid var(--line); background: var(--panel); min-height: 46px; flex-wrap: wrap;
+  }
+  .bar .grow { flex: 1; }
+  select, button {
+    font: inherit; font-size: 13.5px; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; cursor: pointer;
+  }
+  button:hover, select:hover { border-color: var(--muted); }
+  .tab { border-color: transparent; background: none; color: var(--muted); }
+  .tab[aria-selected="true"] { color: var(--ink); background: var(--bg); border-color: var(--line); }
+  .badge {
+    display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 4px; border-radius: 9px;
+    font-size: 11.5px; line-height: 18px; text-align: center; background: var(--line); color: var(--ink);
+  }
+  .badge.err { background: var(--accent); color: #fff; }
+  .editor { flex: 1; min-height: 0; display: flex; background: var(--code-bg); }
+  .gutter {
+    padding: 14px 8px 14px 12px; color: var(--muted); text-align: right; user-select: none;
+    font: 13.5px/1.6 var(--mono); white-space: pre; overflow: hidden; opacity: 0.7;
+  }
+  textarea {
+    flex: 1; min-width: 0; resize: none; border: 0; outline: none; padding: 14px 14px 14px 6px;
+    background: transparent; color: var(--ink); font: 13.5px/1.6 var(--mono); tab-size: 2; white-space: pre;
+  }
+  .out { flex: 1; min-height: 0; overflow: auto; padding: 16px 18px; }
+  .status { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .pill { font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.no { background: var(--accent-soft); color: var(--accent); }
+  .muted { color: var(--muted); font-size: 13px; }
+  .unit { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin-bottom: 12px; overflow: hidden; }
+  .unit h3 { margin: 0; font-size: 14.5px; padding: 10px 14px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  .unit h3 code { font-weight: 500; color: var(--muted); }
+  .facts { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px 0; }
+  .fact { font: 12px var(--mono); background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; }
+  .fact.keys { border-color: var(--accent); color: var(--accent); }
+  .feasible { padding: 10px 14px; }
+  .chip { display: inline-block; font: 12.5px var(--mono); padding: 2px 8px; margin: 0 4px 4px 0; border-radius: 6px; background: var(--ok-soft); color: var(--ok); }
+  details { border-top: 1px solid var(--line); }
+  summary { cursor: pointer; padding: 8px 14px; color: var(--muted); font-size: 13px; }
+  ul.ex { list-style: none; margin: 0; padding: 0 14px 10px; }
+  ul.ex li { padding: 5px 0; border-top: 1px dashed var(--line); font-size: 13px; }
+  ul.ex li:first-child { border-top: 0; }
+  ul.ex b { font: 600 12.5px var(--mono); }
+  ul.ex span { display: block; color: var(--muted); }
+  ul.ex span.j { color: var(--accent); }
+  .diag { font: 13px/1.5 var(--mono); padding: 8px 10px; border-radius: 7px; margin-bottom: 6px; cursor: pointer; }
+  .diag.error { background: var(--accent-soft); color: var(--accent); }
+  .diag.warning { background: var(--warn-soft); color: var(--warn); }
+  pre { margin: 0; font: 12.5px/1.55 var(--mono); white-space: pre-wrap; word-break: break-word; }
+  .cert-intro { font-size: 13.5px; margin: 0 0 12px; max-width: 70ch; }
+  .cert-intro code { font: 12.5px var(--mono); background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  .hidden { display: none !important; }
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; grid-template-rows: minmax(320px, 46vh) auto; }
+    section + section { border-left: 0; border-top: 1px solid var(--line); }
+    .out { overflow: visible; }
+    body { height: auto; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <svg viewBox="309 652 1360 780" aria-hidden="true"><path fill="#FF3131" fill-rule="evenodd" d="M309 652H1084V1254H1181V652H1377V1254H1474V652H1669V1432H928V831H894V953L806 1039L894 1125V1432H309Z M504 831V953H699V831Z M504 1125V1254H699V1125Z"/></svg>
+  <h1>Bailiwick Playground</h1>
+  <p>Say what your software needs and what the rules are. See, as you type, where each part may legally run, and exactly why everywhere else is ruled out.</p>
+  <a href="https://github.com/Helocorecorp/bailiwick">GitHub</a>
+</header>
+<main>
+  <section>
+    <div class="bar">
+      <select id="example" aria-label="Example program">
+        <option value="clinic-sovereign">Patient records beyond US reach</option>
+        <option value="storefront">EU storefront</option>
+        <option value="edge-site">Static site on the edge</option>
+      </select>
+      <span class="grow"></span>
+      <button id="format" title="Canonical formatting">Format</button>
+      <button id="share" title="Copy a link to this program">Share</button>
+    </div>
+    <div class="editor">
+      <div class="gutter" id="gutter" aria-hidden="true">1</div>
+      <textarea id="src" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Bailiwick program"></textarea>
+    </div>
+  </section>
+  <section>
+    <div class="bar" role="tablist">
+      <button class="tab" role="tab" data-tab="plan" aria-selected="true">Plan</button>
+      <button class="tab" role="tab" data-tab="problems" aria-selected="false">Problems<span class="badge" id="nprob">0</span></button>
+      <button class="tab" role="tab" data-tab="cert" aria-selected="false">Certificate</button>
+      <span class="grow"></span>
+      <span class="muted" id="timing"></span>
+    </div>
+    <div class="out" id="tab-plan"><p class="muted">Loading the toolchain…</p></div>
+    <div class="out hidden" id="tab-problems"></div>
+    <div class="out hidden" id="tab-cert">
+      <p class="cert-intro">Every verdict below, with the exact inputs it depended on, bound by a SHA-256 digest. An auditor checks it offline with <code>bwk-model verify</code>, the program built from Bailiwick's Lean proofs, or with <code>bailiwick verify</code> against the source.</p>
+      <div class="bar" style="border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px;">
+        <span class="muted" id="digest"></span><span class="grow"></span>
+        <button id="download">Download certificate</button>
+      </div>
+      <pre id="cert"></pre>
+    </div>
+  </section>
+</main>
+<script>
+(async () => {
+  const $ = (id) => document.getElementById(id);
+  const src = $("src"), gutter = $("gutter");
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+  let wasm;
+  try {
+    const { instance } = await WebAssembly.instantiateStreaming(fetch("bailiwick.wasm"), {});
+    wasm = instance.exports;
+  } catch (e) {
+    $("tab-plan").innerHTML = `<p class="diag error">Could not load the toolchain: ${esc(e.message)}</p>`;
+    return;
+  }
+
+  function evaluate(text) {
+    const bytes = new TextEncoder().encode(text);
+    const p = wasm.bwk_alloc(bytes.length);
+    new Uint8Array(wasm.memory.buffer, p, bytes.length).set(bytes);
+    const r = wasm.bwk_run(p, bytes.length);
+    wasm.bwk_free(p, bytes.length);
+    return JSON.parse(new TextDecoder().decode(new Uint8Array(wasm.memory.buffer, r, wasm.bwk_result_len())));
+  }
+
+  let last = null;
+
+  function renderPlan(out) {
+    const el = $("tab-plan");
+    const errors = out.diagnostics.filter((d) => d.severity === "error");
+    if (errors.length) {
+      el.innerHTML = `<div class="status"><span class="pill no">${errors.length} error${errors.length > 1 ? "s" : ""}</span><span class="muted">Fix them to see the plan (Problems tab).</span></div>`;
+      return;
+    }
+    if (!out.plan) {
+      el.innerHTML = `<p class="muted">Write a <code>workload</code> to see where it may run.</p>`;
+      return;
+    }
+    const source = out.catalog === "own" ? `the ${out.offers} offers in this program` : `${out.offers} fictional example offers (made-up vendors; add your own \`offer\` blocks)`;
+    let html = "";
+    for (const w of out.plan.workloads) {
+      html += `<div class="status"><span class="pill ${w.deployable ? "ok" : "no"}">${w.deployable ? "Deploys" : "Fails closed"}</span>
+        <b>${esc(w.workload)}</b><span class="muted">against ${source}${w.policies.length ? `, under ${w.policies.map((p) => `<code>${esc(p)}</code>`).join(", ")}` : ""}</span></div>`;
+      for (const u of w.units) {
+        const facts = [`residency ${u.residency}`, `S${u.sensitivity}`, `needs T${u.min_trust}`];
+        if (u.min_vendors) facts.push(`${u.min_vendors}+ vendors`);
+        for (const f of u.requires) facts.push(f);
+        html += `<div class="unit"><h3>${esc(u.name)} <code>${esc(u.kind)} : ${esc(u.class)}</code></h3>
+          <div class="facts">${facts.map((f) => `<span class="fact">${esc(f)}</span>`).join("")}${u.customer_keys ? `<span class="fact keys">customer-held keys · ${esc(u.customer_keys)}</span>` : ""}</div>
+          <div class="feasible">${u.feasible.length ? u.feasible.map((id) => `<span class="chip">${esc(id)}</span>`).join("") : `<span class="pill no">no feasible offer</span>`}
+          ${u.fails_closed ? `<p class="muted" style="margin:6px 0 0">${esc(u.fails_closed)}</p>` : ""}</div>
+          ${u.excluded.length ? `<details><summary>${u.excluded.length} excluded, and why</summary><ul class="ex">${u.excluded
+            .map((x) => `<li><b>${esc(x.offer)}</b>${x.reasons.map((r) => `<span class="${r.kind === "jurisdiction" || r.kind === "key_custody" ? "j" : ""}">${esc(r.reason)}</span>`).join("")}</li>`)
+            .join("")}</ul></details>` : ""}</div>`;
+      }
+    }
+    el.innerHTML = html;
+  }
+
+  function renderProblems(out) {
+    const n = out.diagnostics.length, nerr = out.diagnostics.filter((d) => d.severity === "error").length;
+    $("nprob").textContent = n;
+    $("nprob").className = "badge" + (nerr ? " err" : "");
+    $("tab-problems").innerHTML = n
+      ? out.diagnostics.map((d) => `<div class="diag ${d.severity}" data-line="${d.line}">${d.line}:${d.col} ${esc(d.message)}</div>`).join("")
+      : `<p class="muted">No problems.</p>`;
+  }
+
+  function renderCert(out) {
+    const c = out.certificate;
+    $("cert").textContent = c ? JSON.stringify(c, null, 2) : "No certificate: the program has errors or no workload.";
+    $("digest").textContent = c ? `inputs sha256 ${c.inputs_sha256.slice(0, 16)}…` : "";
+    $("download").disabled = !c;
+  }
+
+  function lines() {
+    const n = src.value.split("\n").length;
+    let s = "";
+    for (let i = 1; i <= n; i++) s += i + "\n";
+    gutter.textContent = s;
+  }
+
+  function run() {
+    const t = performance.now();
+    last = evaluate(src.value);
+    const ms = performance.now() - t;
+    renderPlan(last); renderProblems(last); renderCert(last); lines();
+    $("timing").textContent = `${ms < 10 ? ms.toFixed(1) : Math.round(ms)} ms, in your browser`;
+  }
+
+  let timer;
+  src.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 120); lines(); });
+  src.addEventListener("scroll", () => { gutter.scrollTop = src.scrollTop; });
+  src.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const a = src.selectionStart;
+      src.setRangeText("  ", a, src.selectionEnd, "end");
+      src.dispatchEvent(new Event("input"));
+    }
+  });
+
+  for (const t of document.querySelectorAll(".tab")) {
+    t.addEventListener("click", () => {
+      for (const o of document.querySelectorAll(".tab")) {
+        o.setAttribute("aria-selected", o === t ? "true" : "false");
+        $("tab-" + o.dataset.tab).classList.toggle("hidden", o !== t);
+      }
+    });
+  }
+
+  $("tab-problems").addEventListener("click", (e) => {
+    const line = Number(e.target.closest(".diag")?.dataset.line);
+    if (!line) return;
+    const before = src.value.split("\n").slice(0, line - 1).join("\n").length + (line > 1 ? 1 : 0);
+    src.focus();
+    src.setSelectionRange(before, before);
+  });
+
+  $("format").addEventListener("click", () => {
+    if (last && !last.diagnostics.some((d) => d.severity === "error")) { src.value = last.formatted; run(); }
+  });
+
+  $("download").addEventListener("click", () => {
+    if (!last?.certificate) return;
+    const blob = new Blob([JSON.stringify(last.certificate, null, 2) + "\n"], { type: "application/json" });
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "bailiwick-certificate.json" });
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  const enc64 = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const dec64 = (s) => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0)));
+
+  $("share").addEventListener("click", async () => {
+    const url = location.href.split("#")[0] + "#src=" + enc64(src.value);
+    history.replaceState(null, "", url);
+    try { await navigator.clipboard.writeText(url); $("share").textContent = "Link copied"; } catch { $("share").textContent = "Link in address bar"; }
+    setTimeout(() => ($("share").textContent = "Share"), 1800);
+  });
+
+  async function load(name) {
+    const r = await fetch(`examples/${name}.bwk`);
+    src.value = r.ok ? await r.text() : `// could not load example ${name}`;
+    run();
+  }
+  $("example").addEventListener("change", (e) => load(e.target.value));
+
+  const m = location.hash.match(/src=([\w-]+)/);
+  if (m) {
+    try { src.value = dec64(m[1]); run(); } catch { await load("clinic-sovereign"); }
+  } else {
+    await load("clinic-sovereign");
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+// The service declares neither residency nor sensitivity. Both come from
+// the data it depends on: effective residency eu, effective S3, floor T3.
+workload inherit {
+  data records {
+    sensitivity = S3
+    residency   = eu
+  }
+
+  service api : backend-api {
+    depends_on = records
+  }
+}

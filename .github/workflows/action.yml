@@ -1,0 +1,40 @@
+name: action
+
+# Runs the repository's own GitHub Action (action.yml) the way a user's
+# workflow would: once expecting success, once expecting a violation.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  passes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: bwk
+        uses: ./
+        with:
+          file: examples/clinic-sovereign.bwk
+          catalog: examples/catalog/all.bwk
+          comment: "false"
+      - run: test "${{ steps.bwk.outputs.deployable }}" = true
+
+  catches-a-violation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: bwk
+        uses: ./
+        with:
+          file: tests/fixtures/check-plan.bwk
+          catalog: examples/catalog/all.bwk
+          plan: tests/fixtures/terraform-plan.json
+          comment: "false"
+          fail: "false"
+      - run: |
+          test "${{ steps.bwk.outputs.deployable }}" = true
+          test "${{ steps.bwk.outputs.plan-ok }}" = false

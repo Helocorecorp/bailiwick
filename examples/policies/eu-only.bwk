@@ -1,0 +1,9 @@
+// An organization policy. Policies can only narrow: residency intersects,
+// trust floors rise, denied vendors are removed, budgets are capped. A
+// workload that imports this file cannot loosen any of it.
+
+policy eu-only {
+  residency = eu
+  min_trust = T2                 // no open-supply (T1) nodes anywhere
+  budget   <= $50000 / month
+}

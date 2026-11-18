@@ -1,0 +1,30 @@
+// A small EU e-commerce workload. See `bailiwick explain` against the
+// fictional example offers (catalog/all.bwk) to find which may run each part.
+
+workload storefront {
+  profile = balanced
+  budget  = $40000 / month
+  value_of latency = $1.50 per 10 ms per 1000000 requests   // a preference for the optimizer, never a filter
+
+  data customer_db {
+    sensitivity = S3            // regulated customer data: needs trust T3
+    residency   = eu
+  }
+
+  service web : backend-api {
+    image       = "registry.example.com/acme/storefront-web:1.0"
+    residency   = eu
+    redundancy { vendors >= 2 }
+    resources  { vcpu >= 2  mem >= 4 GB }
+    depends_on  = customer_db   // its sensitivity + residency propagate here
+  }
+
+  service media : media-assets {
+    sensitivity = S0            // public assets: any T1+ offer will do
+  }
+
+  job nightly_report : background-jobs {
+    deadline       = 6 h
+    checkpointable = true       // eligible for spot / open supply
+  }
+}

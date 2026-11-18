@@ -1,0 +1,11 @@
+// FICTIONAL EXAMPLE OFFERS. Not real providers: the vendors are made up
+// (vendor-a, vendor-b, ...) and so is every value here, including prices,
+// capacity and trust levels. They exist only so the examples and tests have
+// something to run against. Countries and subdivisions are real places;
+// nothing here says anything about any real provider operating there.
+//
+// For real decisions, use offers your providers publish, or describe the
+// servers you actually run.
+
+import "core.bwk"
+import "more.bwk"

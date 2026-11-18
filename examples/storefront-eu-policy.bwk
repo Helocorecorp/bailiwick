@@ -1,0 +1,31 @@
+// The storefront under the organization's EU-only policy. Compare with
+// storefront.bwk: `media` and `nightly_report` declare no residency, so
+// alone they could run anywhere; under the policy they are EU-only, and
+// the T1 open-supply node is excluded from the job.
+
+import "policies/eu-only.bwk"
+
+workload storefront {
+  profile = balanced
+  budget  = $40000 / month
+
+  data customer_db {
+    sensitivity = S3
+    residency   = eu
+  }
+
+  service web : backend-api {
+    residency   = eu
+    redundancy { vendors >= 2 }
+    depends_on  = customer_db
+  }
+
+  service media : media-assets {
+    sensitivity = S0
+  }
+
+  job nightly_report : background-jobs {
+    deadline       = 6 h
+    checkpointable = true
+  }
+}

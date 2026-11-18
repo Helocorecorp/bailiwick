@@ -1,0 +1,31 @@
+// Patient records must stay in the EU, beyond the reach of US law, with
+// the clinic holding its own keys. Try it against the fictional example
+// offers:
+//
+//   bailiwick explain clinic-sovereign.bwk --catalog catalog/all.bwk
+//
+// An EU region run by a provider headquartered in the US is within reach
+// of US law; it qualifies only if the clinic, not the provider, holds the
+// keys. Every exclusion names the rule and the policy behind it.
+
+policy sovereign {
+  residency          = eu
+  deny jurisdictions = [ us ]
+}
+
+workload clinic {
+  data records {
+    sensitivity = S3
+    keys        = customer
+  }
+
+  service api : backend-api {
+    depends_on = records
+    redundancy { vendors >= 2 }
+    resources  { vcpu >= 2  mem >= 4 GB }
+  }
+
+  job reports : background-jobs {
+    deadline = 6 h
+  }
+}

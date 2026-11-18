@@ -1,0 +1,19 @@
+// quebec-law25 — Québec's Act respecting the protection of personal
+// information in the private sector, as amended by Law 25
+//
+// The law: before communicating personal information outside Québec, an
+// organisation must carry out a privacy impact assessment and may proceed
+// only if the information would receive adequate protection (s. 17).
+//
+// This pack: everything runs in Québec, so no assessment is triggered.
+// Offers must state their subdivision (`subdivision = qc`) to qualify.
+//
+// Not covered: transfers you have assessed and documented. If you rely on
+// one, write your own policy instead of importing this one.
+//
+// Use `import "quebec-law25"`. Not legal advice.
+
+policy quebec-law25 {
+  residency = quebec
+  min_trust = T2
+}

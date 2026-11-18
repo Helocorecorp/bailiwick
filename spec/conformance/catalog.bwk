@@ -1,0 +1,137 @@
+// Frozen catalog for the conformance suite. Do not edit casually: every
+// expected.json / expected.pb depends on it.
+//
+// FICTIONAL EXAMPLE OFFERS. Not real providers: the vendors are made up
+// (vendor-a, vendor-b, ...) and so is every value here, including prices,
+// capacity and trust levels. They exist only so the examples and tests have
+// something to run against. Countries and subdivisions are real places;
+// nothing here says anything about any real provider operating there.
+//
+// For real decisions, use offers your providers publish, or describe the
+// servers you actually run.
+
+offer a-de {
+  vendor  = vendor-a
+  country = de
+  trust   = T2
+  classes = [ backend-api, media-assets, background-jobs, database ]
+  price   = $0.0198 / vcpu_hour
+  resources { vcpu = 16  mem = 32 GB  disk = 320 GB  gpu = 0 }
+}
+
+offer b-fr {
+  vendor  = vendor-b
+  country = fr
+  trust   = T3
+  classes = [ backend-api, database, media-assets, background-jobs ]
+  price   = $0.0290 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+}
+
+offer c-fr {
+  vendor  = vendor-c
+  country = fr
+  trust   = T3
+  classes = [ backend-api, media-assets, background-jobs ]
+  price   = $0.0240 / vcpu_hour
+  resources { vcpu = 8  mem = 32 GB  disk = 400 GB  gpu = 0 }
+}
+
+offer d-fi {
+  vendor  = vendor-d
+  country = fi
+  trust   = T2
+  classes = [ backend-api, database, media-assets, background-jobs ]
+  price   = $0.0220 / vcpu_hour
+  resources { vcpu = 8  mem = 32 GB  disk = 200 GB  gpu = 0 }
+}
+
+offer e-us-va {
+  vendor      = vendor-e
+  country     = us
+  subdivision = va
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0416 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+}
+
+offer f-us-ca {
+  vendor      = vendor-f
+  country     = us
+  subdivision = ca
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0380 / vcpu_hour
+  resources { vcpu = 64  mem = 256 GB  disk = 1000 GB  gpu = 4 }
+}
+
+offer g-us {
+  vendor   = vendor-g
+  country  = us
+  trust    = T2
+  classes  = [ media-assets, frontend-static ]
+  price    = $0.0050 / gb_month
+  features = [ cache, waf, http3 ]
+}
+
+offer h-si {
+  vendor   = vendor-h
+  country  = si
+  trust    = T2
+  classes  = [ frontend-static, media-assets ]
+  price    = $0.0100 / gb_egress
+  features = [ cache, http3 ]
+}
+
+offer i-de {
+  vendor  = vendor-i
+  country = de
+  trust   = T1
+  classes = [ background-jobs, ml-inference ]
+  price   = $0.0035 / vcpu_hour
+  resources { vcpu = 16  mem = 64 GB  disk = 500 GB  gpu = 1 }
+}
+
+offer e-de-he {
+  vendor        = vendor-e
+  country       = de
+  trust         = T3
+  classes       = [ backend-api, database, background-jobs ]
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer e-de-he-ck {
+  vendor        = vendor-e
+  country       = de
+  trust         = T3
+  classes       = [ backend-api, database, background-jobs ]
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 0 }
+  jurisdictions = [ us ]
+  keys          = customer
+}
+
+offer a-de-2 {
+  vendor  = example-a
+  country = de
+  trust   = T2
+  classes = [ backend-api ]
+  latency { p95 from eu = 25 ms  p95 from us = 110 ms }
+}
+
+offer b-us {
+  vendor  = example-b
+  country = us
+  trust   = T2
+  classes = [ backend-api ]
+  latency { p95 from eu = 110 ms  p95 from us = 40 ms }
+}
+
+offer c-fr-2 {
+  vendor  = example-c
+  country = fr
+  trust   = T2
+  classes = [ backend-api ]
+  latency { p95 from eu = 30 ms }
+}

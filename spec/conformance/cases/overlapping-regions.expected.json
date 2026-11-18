@@ -1,0 +1,161 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "nordic",
+      "policies": ["nordics-only"],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "{dk,fi,se}",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["d-fi"],
+          "feasible_vendors": 1,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `de` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `fr` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `fr` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `si` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `de` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `de` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `de` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `de` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `fr` is outside residency `{dk,fi,se}`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

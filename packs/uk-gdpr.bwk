@@ -1,0 +1,19 @@
+// uk-gdpr — UK GDPR and the Data Protection Act 2018
+//
+// The law: personal data may leave the UK only for a country covered by
+// UK adequacy regulations or under appropriate safeguards (the IDTA or the
+// UK Addendum to the EU clauses).
+//
+// This pack: everything runs in the UK or a country with UK adequacy, on
+// offers with a contract and an audit (T2 or better).
+//
+// Not covered: transfers under the IDTA or the Addendum, and the UK
+// Extension to the EU–US Data Privacy Framework, which covers only
+// certified US organisations.
+//
+// Use `import "uk-gdpr"`. Not legal advice.
+
+policy uk-gdpr {
+  residency = uk-adequate
+  min_trust = T2
+}

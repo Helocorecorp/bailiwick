@@ -1,0 +1,328 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "clinic",
+      "policies": ["beyond-us-reach"],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "eu",
+          "sensitivity": 3,
+          "min_trust": 3,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": "data `records`",
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["e-de-he-ck"],
+          "feasible_vendors": 1,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T1 is below the required T3"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                },
+                {
+                  "kind": "key_custody",
+                  "reason": "the provider holds the keys; data `records` requires customer-held keys"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "job",
+          "name": "reports",
+          "class": "background-jobs",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "i-de", "e-de-he-ck"],
+          "feasible_vendors": 6,
+          "excluded": [
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                },
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                },
+                {
+                  "kind": "jurisdiction",
+                  "reason": "within reach of jurisdiction `us`, denied by policy `beyond-us-reach`, and the provider holds the keys"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

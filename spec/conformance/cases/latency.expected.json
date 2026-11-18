@@ -1,0 +1,381 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "checkout",
+      "policies": [],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "eu-api",
+          "class": "backend-api",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": 50,
+          "slo_from": ["eu"],
+          "feasible": ["a-de-2", "c-fr-2"],
+          "feasible_vendors": 2,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 50 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "p95 from `eu` is 110 ms, above the 50 ms SLO"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "service",
+          "name": "global-api",
+          "class": "backend-api",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": 120,
+          "slo_from": ["eu", "us"],
+          "feasible": ["a-de-2", "b-us"],
+          "feasible_vendors": 2,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `eu`; the SLO needs 120 ms or less from there"
+                },
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "latency",
+                  "reason": "no measured p95 from `us`; the SLO needs 120 ms or less from there"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "service",
+          "name": "unpinned",
+          "class": "backend-api",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": 1,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "e-us-va", "f-us-ca", "e-de-he", "e-de-he-ck", "a-de-2", "b-us", "c-fr-2"],
+          "feasible_vendors": 9,
+          "excluded": [
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

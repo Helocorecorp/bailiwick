@@ -1,0 +1,144 @@
+// Bailiwick — canonical IR, version bwk/0.
+//
+// This is the interchange shape for a *described* workload: what it needs,
+// not where it runs. `bailiwick ir` emits the JSON mapping of this schema
+// (proto3 JSON mapping, with the unit suffixes below spelled out in the
+// field names) and `bailiwick ir --proto` emits the binary encoding. Tools
+// that cannot or should not parse BWK syntax — a Terraform provider, a
+// compose converter, the optimizer — read or write this instead.
+//
+// Units: durations are milliseconds, money is US dollars, data sizes are
+// GB (2^30 bytes), sensitivity and trust levels are their integer rank
+// (S2 → 2, T3 → 3). Absent optional fields are omitted (JSON: null).
+//
+// Encoding is deterministic: fields in ascending number order, implicit-
+// presence scalars omitted at their default, `optional` scalars written
+// whenever set, repeated elements in declaration order, no unknown fields.
+
+syntax = "proto3";
+
+package bwk.v0;
+
+message File {
+  string version = 1;                 // always "bwk/0" for this schema
+  repeated string imports = 2;        // as written; already resolved by the loader
+  repeated Policy policies = 3;       // including merged imports and --policy files
+  repeated Workload workloads = 4;
+  repeated Offer offers = 5;
+}
+
+// A money amount per period, e.g. $40000 / month.
+message Budget {
+  double amount_usd = 1;
+  string period = 2;                  // "month" in v0
+}
+
+// Compute resources. On a Service or Job these are minimums; on an Offer
+// they are what it provides. vcpu and gpu are counts; mem/disk are GB.
+message Resources {
+  optional double vcpu = 1;
+  optional double mem_gb = 2;
+  optional double disk_gb = 3;
+  optional double gpu = 4;
+}
+
+// An edge cache rule. Exactly one of ttl_ms / never is meaningful:
+// `cache "/p" for 30 d` → ttl_ms = 2592000000; `cache "/p" never` → never = true.
+message CacheRule {
+  string path = 1;                    // must start with "/"
+  optional double ttl_ms = 2;
+  bool never = 3;
+}
+
+// Governance. Every field can only narrow the feasible set:
+//   residency → intersection, min_trust → maximum,
+//   deny_* → union, budget_cap → minimum.
+message Policy {
+  string name = 1;
+  optional string residency = 2;      // global | eu | eea | nordics | us | ca | uk | apac | california | quebec
+  optional uint32 min_trust = 3;      // 0..3
+  repeated string deny_vendors = 4;
+  repeated string deny_countries = 5; // ISO 3166-1 alpha-2, lowercase
+  optional Budget budget_cap = 6;
+  repeated string deny_jurisdictions = 7; // no plaintext within reach of these
+  optional string keys = 8;           // customer | vendor
+}
+
+message Workload {
+  string name = 1;
+  optional string profile = 2;        // cheapest | balanced | fastest | sovereign | green
+  optional Budget budget = 3;
+  // Default value of latency: dollars per millisecond per request.
+  // A preference for the optimizer; never a filter.
+  optional double value_latency_usd_per_ms_per_request = 4;
+  repeated Data data = 5;
+  repeated Service services = 6;
+  repeated Job jobs = 7;
+}
+
+// A data store. Its sensitivity and residency propagate to every service
+// that depends on it (the service's effective values are the max / the
+// intersection).
+message Data {
+  string name = 1;
+  optional uint32 sensitivity = 2;    // 0..3 (S0 public .. S3 regulated)
+  optional string residency = 3;
+  optional string keys = 4;           // customer | vendor
+}
+
+message Service {
+  string name = 1;
+  string class = 2;                   // frontend-static | backend-api | media-assets |
+                                      // database | background-jobs | ml-inference
+  optional string image = 3;          // OCI reference; a digest is recommended
+  optional uint32 sensitivity = 4;
+  optional string residency = 5;
+  optional double slo_p95_ms = 6;
+  optional int64 min_vendors = 7;     // redundancy { vendors >= n }
+  repeated string depends_on = 8;     // names of Data in the same workload
+  optional Resources resources = 9;   // minimums
+  optional double value_latency_usd_per_ms_per_request = 10;  // overrides the workload default
+  repeated CacheRule cache = 11;      // edge cache rules; any rule implies the `cache` feature
+  repeated string requires = 12;      // edge features the offer must provide
+  optional string keys = 13;          // customer | vendor
+  repeated string slo_from = 14;      // regions the SLO is measured from; with any, a placement rule
+}
+
+message Job {
+  string name = 1;
+  string class = 2;
+  optional string image = 3;
+  optional double deadline_ms = 4;
+  optional bool checkpointable = 5;
+  optional uint32 sensitivity = 6;
+  optional string residency = 7;
+  optional Resources resources = 8;   // minimums
+  optional string keys = 9;           // customer | vendor
+}
+
+// Supply. A provider describes each offer; the feasibility rules in
+// spec/feasibility.md decide which workloads it may serve.
+message Offer {
+  string id = 1;
+  optional string vendor = 2;
+  optional string country = 3;        // ISO 3166-1 alpha-2, lowercase
+  optional uint32 trust = 4;          // 0..3
+  repeated string classes = 5;
+  optional Price price = 6;
+  optional Resources resources = 7;   // what one unit of the offer provides
+  repeated string features = 8;       // edge features provided (cache, waf, ...)
+  optional string subdivision = 9;    // ISO 3166-2 code part within `country` (e.g. "ca")
+  repeated string jurisdictions = 10; // whose law reaches the operator, besides `country`
+  optional string keys = 11;          // customer | vendor; unstated means vendor
+  repeated Latency latency = 12;      // measured p95 from users in each region
+}
+
+message Latency {
+  string from = 1;                    // a region name
+  double p95_ms = 2;
+}
+
+message Price {
+  double amount_usd = 1;
+  string unit = 2;                    // e.g. vcpu_hour, gb_month, gb_egress, gpu_hour, request
+}

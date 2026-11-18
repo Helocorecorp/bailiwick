@@ -1,0 +1,15 @@
+// rbi-payments — Reserve Bank of India, Storage of Payment System Data
+// (directive of 6 April 2018)
+//
+// The law: all data relating to payment systems operated in India must be
+// stored only in India.
+//
+// This pack: everything runs in India, on offers with a contract and an
+// audit (T2 or better).
+//
+// Use `import "rbi-payments"`. Not legal advice.
+
+policy rbi-payments {
+  residency = india
+  min_trust = T2
+}

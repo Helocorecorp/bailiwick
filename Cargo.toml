@@ -1,0 +1,26 @@
+[package]
+name = "bailiwick"
+version = "0.1.0"
+edition = "2021"
+description = "Reference toolchain for the Bailiwick (BWK): parser, unit-aware type checker, and feasibility evaluator."
+authors = ["Phantombyter"]
+license = "Apache-2.0"
+repository = "https://github.com/Helocorecorp/bailiwick"
+homepage = "https://github.com/Helocorecorp/bailiwick"
+readme = "README.md"
+keywords = ["dsl", "infrastructure", "data-residency", "compliance", "language-server"]
+categories = ["command-line-utilities", "development-tools", "parser-implementations"]
+
+# No third-party dependencies: the reference toolchain must be auditable
+# and buildable offline. JSON is emitted by hand.
+
+[[bin]]
+name = "bailiwick"
+path = "src/main.rs"
+
+[lib]
+name = "bailiwick"
+path = "src/lib.rs"
+
+[profile.release]
+opt-level = 2

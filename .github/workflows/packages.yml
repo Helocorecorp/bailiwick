@@ -1,0 +1,58 @@
+name: packages
+
+# The npm (@helocore/bailiwick) and Python (bailiwick-lang) packages: the
+# toolchain compiled to WebAssembly with a thin CLI. Tested on every
+# change; published on a `v*` tag when the registry token is set
+# (NPM_TOKEN for npm, PYPI_TOKEN for PyPI).
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build the WebAssembly toolchain
+        run: |
+          cd playground && cargo build --release --target wasm32-unknown-unknown
+          cp target/wasm32-unknown-unknown/release/bailiwick_playground.wasm ../packages/npm/bailiwick.wasm
+          cp target/wasm32-unknown-unknown/release/bailiwick_playground.wasm ../packages/python/src/bailiwick/bailiwick.wasm
+          cp ../LICENSE ../packages/npm/LICENSE
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - name: npm package works
+        run: cd packages/npm && npm test && npm pack --dry-run
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python package works
+        run: |
+          python -m pip install build
+          cd packages/python && python -m build
+          python -m pip install dist/*.whl
+          python test_cli.py
+      - name: Publish to npm
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then echo "NPM_TOKEN not set; not publishing"; exit 0; fi
+          cd packages/npm && npm publish --access public
+      - name: Publish to PyPI
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          if [ -z "$TWINE_PASSWORD" ]; then echo "PYPI_TOKEN not set; not publishing"; exit 0; fi
+          python -m pip install twine && twine upload packages/python/dist/*

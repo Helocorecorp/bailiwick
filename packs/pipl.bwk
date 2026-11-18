@@ -1,0 +1,14 @@
+// pipl — China's Personal Information Protection Law
+//
+// The law: critical information infrastructure operators, and processors
+// handling personal information above the thresholds the CAC sets, must
+// store it in China; anyone sending it abroad needs a security assessment,
+// certification or the CAC's standard contract (Arts. 38–40).
+//
+// This pack: everything runs in China.
+//
+// Use `import "pipl"`. Not legal advice.
+
+policy pipl {
+  residency = china
+}

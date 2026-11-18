@@ -1,0 +1,5 @@
+src/bailiwick/bailiwick.wasm
+*.egg-info/
+build/
+dist/
+__pycache__/

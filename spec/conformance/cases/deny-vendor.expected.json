@@ -1,0 +1,190 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "governed",
+      "policies": ["no-aws"],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 2,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "f-us-ca", "a-de-2", "b-us", "c-fr-2"],
+          "feasible_vendors": 8,
+          "excluded": [
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "policy_vendor",
+                  "reason": "vendor `vendor-e` is denied by policy `no-aws`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T1 is below the required T2"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "policy_vendor",
+                  "reason": "vendor `vendor-e` is denied by policy `no-aws`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "policy_vendor",
+                  "reason": "vendor `vendor-e` is denied by policy `no-aws`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "job",
+          "name": "batch",
+          "class": "background-jobs",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 2,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "f-us-ca"],
+          "feasible_vendors": 5,
+          "excluded": [
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "policy_vendor",
+                  "reason": "vendor `vendor-e` is denied by policy `no-aws`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T1 is below the required T2"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "policy_vendor",
+                  "reason": "vendor `vendor-e` is denied by policy `no-aws`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "policy_vendor",
+                  "reason": "vendor `vendor-e` is denied by policy `no-aws`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

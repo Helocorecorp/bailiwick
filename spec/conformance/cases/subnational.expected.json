@@ -1,0 +1,161 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "ccpa",
+      "policies": ["california-only"],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "california",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["f-us-ca"],
+          "feasible_vendors": 1,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `de` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `fr` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `fr` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `fi` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `us-va` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "location `us` is outside residency `california` (subdivision unknown)"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "location `si` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "location `de` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `de` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `de` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `de` is outside residency `california`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `us` is outside residency `california` (subdivision unknown)"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "location `fr` is outside residency `california`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

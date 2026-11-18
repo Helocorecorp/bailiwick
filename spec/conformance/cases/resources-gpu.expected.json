@@ -1,0 +1,306 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "trainer",
+      "policies": [],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": {
+            "vcpu": 2,
+            "mem_gb": 4,
+            "disk_gb": null,
+            "gpu": null
+          },
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "e-us-va", "f-us-ca", "e-de-he", "e-de-he-ck"],
+          "feasible_vendors": 6,
+          "excluded": [
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.vcpu; 2 required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 4 GB required"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.vcpu; 2 required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 4 GB required"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.vcpu; 2 required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 4 GB required"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.vcpu; 2 required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 4 GB required"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.vcpu; 2 required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 4 GB required"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "job",
+          "name": "finetune",
+          "class": "ml-inference",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": {
+            "vcpu": null,
+            "mem_gb": 32,
+            "disk_gb": null,
+            "gpu": 1
+          },
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["e-us-va", "f-us-ca", "i-de"],
+          "feasible_vendors": 3,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "resources.gpu is 0, below the required 1"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "resources.gpu is 0, below the required 1"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "resources.gpu is 0, below the required 1"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "resources.gpu is 0, below the required 1"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 32 GB required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.gpu; 1 required"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 32 GB required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.gpu; 1 required"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "resources.gpu is 0, below the required 1"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "resources.gpu is 0, below the required 1"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 32 GB required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.gpu; 1 required"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 32 GB required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.gpu; 1 required"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `ml-inference`"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.mem; 32 GB required"
+                },
+                {
+                  "kind": "resource",
+                  "reason": "does not declare resources.gpu; 1 required"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

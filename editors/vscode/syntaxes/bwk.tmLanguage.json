@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Bailiwick",
+  "scopeName": "source.bwk",
+  "fileTypes": ["bwk"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#money" },
+    { "include": "#number_with_unit" },
+    { "include": "#number" },
+    { "include": "#level" },
+    { "include": "#block_keyword" },
+    { "include": "#field_keyword" },
+    { "include": "#constant" },
+    { "include": "#operator" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.double-slash.bwk",
+      "match": "//.*$"
+    },
+    "string": {
+      "name": "string.quoted.double.bwk",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [{ "name": "constant.character.escape.bwk", "match": "\\\\[\"\\\\nt]" }]
+    },
+    "money": {
+      "name": "constant.numeric.money.bwk",
+      "match": "\\$[0-9]+(\\.[0-9]+)?"
+    },
+    "number_with_unit": {
+      "match": "\\b([0-9]+(?:\\.[0-9]+)?)\\s*(ms|s|m|h|d|MB|GB|TB)\\b",
+      "captures": {
+        "1": { "name": "constant.numeric.bwk" },
+        "2": { "name": "keyword.other.unit.bwk" }
+      }
+    },
+    "number": {
+      "name": "constant.numeric.bwk",
+      "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+    },
+    "level": {
+      "name": "constant.language.level.bwk",
+      "match": "\\b[ST][0-3]\\b"
+    },
+    "block_keyword": {
+      "match": "\\b(workload|offer|policy|import|data|service|job|resources|redundancy)\\b",
+      "captures": { "1": { "name": "keyword.control.bwk" } }
+    },
+    "field_keyword": {
+      "match": "\\b(profile|budget|value_of|latency|per|requests|image|sensitivity|residency|slo\\.p95|slo|p95|depends_on|cache|for|never|requires|deadline|checkpointable|vendor|country|subdivision|trust|classes|price|features|min_trust|deny|vendors|countries|jurisdictions|keys|customer|from|vcpu|mem|disk|gpu)\\b",
+      "captures": { "1": { "name": "variable.other.property.bwk" } }
+    },
+    "constant": {
+      "match": "\\b(global|eu|eea|nordics|us|ca|uk|apac|california|quebec|cheapest|balanced|fastest|sovereign|green|frontend-static|backend-api|media-assets|database|background-jobs|ml-inference|true|false)\\b",
+      "captures": { "1": { "name": "support.constant.bwk" } }
+    },
+    "operator": {
+      "name": "keyword.operator.bwk",
+      "match": "<=|>=|=|/|:"
+    },
+    "punctuation": {
+      "name": "punctuation.bwk",
+      "match": "[{}\\[\\],]"
+    }
+  }
+}

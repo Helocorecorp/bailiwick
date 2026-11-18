@@ -1,0 +1,12 @@
+// A workload that asks for `global` under an `eu` policy ends up EU-only:
+// policies intersect, they never widen.
+policy eu-only {
+  residency = eu
+}
+
+workload narrowed {
+  service api : backend-api {
+    residency   = global
+    sensitivity = S0
+  }
+}

@@ -1,0 +1,26 @@
+// Rule 8: no jurisdiction a policy denies may reach an offer whose
+// provider holds the keys. An offer is within reach of the law of its own
+// country and of every jurisdiction it declares. Customer-held keys take
+// it out of reach: compelled, the provider can hand over only ciphertext.
+//
+// Rule 9: data marked `keys = customer` excludes, for every service that
+// depends on it, each offer where the provider holds the keys.
+policy beyond-us-reach {
+  deny jurisdictions = [ us ]
+}
+
+workload clinic {
+  data records {
+    sensitivity = S3
+    residency   = eu
+    keys        = customer
+  }
+
+  service api : backend-api {
+    depends_on = records
+  }
+
+  job reports : background-jobs {
+    deadline = 4 h
+  }
+}

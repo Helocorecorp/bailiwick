@@ -1,0 +1,14 @@
+// my-health-records — Australia's My Health Records Act 2012
+//
+// The law: records held for the My Health Record system must not be held
+// or processed outside Australia (s. 77).
+//
+// This pack: everything runs in Australia, on offers suitable for
+// regulated data (T3).
+//
+// Use `import "my-health-records"`. Not legal advice.
+
+policy my-health-records {
+  residency = australia
+  min_trust = T3
+}

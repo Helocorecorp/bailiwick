@@ -1,0 +1,16 @@
+// Policy exclusions are attributed: the plan names the policy that
+// removed each offer. min_trust T2 also removes the T1 open-supply node.
+policy no-aws {
+  deny vendors = [ vendor-e ]
+  min_trust    = T2
+}
+
+workload governed {
+  service api : backend-api {
+    sensitivity = S0
+  }
+
+  job batch : background-jobs {
+    deadline = 2 h
+  }
+}

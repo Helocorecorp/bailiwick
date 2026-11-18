@@ -1,0 +1,56 @@
+name: formal
+
+# Bailiwick's semantics are modelled in Lean 4 (formal/) and its core
+# guarantees are proven there. This job fails if:
+#   - a proof no longer checks;
+#   - any headline theorem rests on an unproven step (sorryAx) or on an
+#     axiom beyond Lean's standard three;
+#   - the Rust implementation disagrees with the proven model on any of
+#     20,000 generated programs;
+#   - the proven model does not accept a certificate the toolchain issues,
+#     or accepts a tampered one.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  proofs:
+    name: proofs check, implementation matches the model
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean (the version pinned in formal/lean-toolchain)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Proofs check
+        working-directory: formal
+        run: |
+          lake build
+          lake build bwk-model
+      - name: No unproven steps, standard axioms only
+        working-directory: formal
+        run: |
+          lake env lean Audit.lean | tee axioms.txt
+          if grep -q sorryAx axioms.txt; then echo "a theorem rests on an unproven step"; exit 1; fi
+          extra=$(grep -o 'axioms: \[.*\]' axioms.txt | tr -d '[]' | sed 's/axioms: //' | tr ',' '\n' | tr -d ' ' \
+            | grep -v -E '^(propext|Classical.choice|Quot.sound|)$' || true)
+          if [ -n "$extra" ]; then echo "unexpected axioms: $extra"; exit 1; fi
+          if grep -rnw 'sorry' Bailiwick Main.lean; then echo "sorry in the sources"; exit 1; fi
+      - uses: dtolnay/rust-toolchain@stable
+      - name: The implementation agrees with the proven model
+        env:
+          BWK_LEAN_MODEL: ${{ github.workspace }}/formal/.lake/build/bin/bwk-model
+          BWK_LEAN_CASES: "20000"
+        run: cargo test --test lean_model -- --nocapture
+      - name: Certificates are checked by the proven model
+        run: |
+          M=formal/.lake/build/bin/bwk-model
+          cargo run -q -- certify examples/clinic-sovereign.bwk --catalog examples/catalog/all.bwk \
+            --place api=e-de-he-ck,f-de-he-ck --place reports=a-de > cert.json
+          $M verify < cert.json
+          cargo run -q -- verify cert.json examples/clinic-sovereign.bwk --catalog examples/catalog/all.bwk
+          # A placement within reach of a denied jurisdiction must be rejected.
+          python3 -c "import json; c=json.load(open('cert.json')); c['units'][0]['placement']=['e-de-he']; json.dump(c, open('bad.json','w'))"
+          if $M verify < bad.json; then echo "the model accepted a tampered certificate"; exit 1; fi

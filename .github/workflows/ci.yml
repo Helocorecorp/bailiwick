@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: build, test, conformance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Build (no dependencies, warnings are errors)
+        run: RUSTFLAGS="-D warnings" cargo build
+      - name: Test
+        run: cargo test
+      # Added 2026-11-16. This workflow built and tested but never linted,
+      # so three clippy errors sat in the published crate while CI stayed
+      # green -- it was not checking rather than passing. The errors are
+      # fixed; this is what stops them coming back.
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Docs
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps
+      - name: Conformance suite is in sync
+        run: |
+          BWK_UPDATE_EXPECTED=1 cargo test --test spec_conformance
+          git diff --exit-code -- spec/conformance/
+      - name: Examples check and explain against the whole catalog
+        run: |
+          for f in examples/*.bwk; do cargo run -q -- check "$f"; done
+          cargo run -q -- explain examples/storefront.bwk --catalog examples/catalog/all.bwk > /dev/null
+          cargo run -q -- explain examples/edge-site.bwk --catalog examples/catalog/all.bwk > /dev/null
+          cargo run -q -- explain examples/clinic-sovereign.bwk --catalog examples/catalog/all.bwk > /dev/null
+      - name: Importers round-trip
+        run: |
+          cargo run -q -- import vendor-u examples/import/vendor-u.toml > /tmp/vendor-u.bwk
+          cargo run -q -- import compose examples/import/docker-compose.yml > /tmp/compose.bwk
+          cargo run -q -- import k8s examples/import/k8s.yaml > /tmp/k8s.bwk
+          cargo run -q -- import terraform examples/import/main.tf > /tmp/tf.bwk
+          for f in /tmp/vendor-u.bwk /tmp/compose.bwk /tmp/k8s.bwk /tmp/tf.bwk; do cargo run -q -- check "$f"; done
+      - name: Editor grammar files are well-formed
+        run: |
+          python3 -c "import json; json.load(open('editors/vscode/package.json')); json.load(open('editors/vscode/language-configuration.json')); json.load(open('editors/tree-sitter-bailiwick/package.json'))"
+          python3 - <<'EOF'
+          import json, re
+          g = json.load(open('editors/vscode/syntaxes/bwk.tmLanguage.json'))
+          def walk(node):
+              if isinstance(node, dict):
+                  for k, v in node.items():
+                      if k in ('match', 'begin', 'end') and isinstance(v, str):
+                          re.compile(v)
+                      walk(v)
+              elif isinstance(node, list):
+                  for v in node: walk(v)
+          walk(g)
+          print("grammar ok:", len(g['repository']), "rules")
+          EOF

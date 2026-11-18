@@ -1,0 +1,12 @@
+// Regions are sets and intersect exactly. `eu ∩ nordics` is {dk, fi, se}:
+// not a named region, so the plan shows the explicit set. Only the
+// Finnish offer qualifies.
+policy nordics-only {
+  residency = nordics
+}
+
+workload nordic {
+  service api : backend-api {
+    residency = eu
+  }
+}

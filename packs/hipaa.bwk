@@ -1,0 +1,19 @@
+// hipaa — US Health Insurance Portability and Accountability Act
+//
+// The law: HIPAA does not restrict where protected health information is
+// stored. A cloud provider holding it is a business associate: it must sign
+// a business associate agreement and implement the Security Rule's
+// safeguards (45 CFR Part 164, Subpart C).
+//
+// This pack: offers must have a contract and an audit (T2 or better). Mark
+// the health data itself `sensitivity = S3`, which raises its services to
+// T3.
+//
+// Not covered: the business associate agreement itself. Bailiwick cannot
+// see contracts; make sure one is signed with every vendor you deploy to.
+//
+// Use `import "hipaa"`. Not legal advice.
+
+policy hipaa {
+  min_trust = T2
+}

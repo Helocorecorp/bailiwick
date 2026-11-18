@@ -1,0 +1,18 @@
+// lgpd — Brazil's Lei Geral de Proteção de Dados (Law 13.709/2018)
+//
+// The law: personal data may leave Brazil only for a country the ANPD has
+// found adequate or under safeguards such as its standard contractual
+// clauses (Art. 33).
+//
+// This pack: everything runs in Brazil, on offers with a contract and an
+// audit (T2 or better).
+//
+// Not covered: transfers under the ANPD's clauses or an adequacy finding.
+// If you rely on one, write your own policy instead of importing this one.
+//
+// Use `import "lgpd"`. Not legal advice.
+
+policy lgpd {
+  residency = brazil
+  min_trust = T2
+}

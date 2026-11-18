@@ -1,0 +1,14 @@
+// Only two EU vendors offer T3 backend-api capacity in the frozen catalog;
+// asking for three must fail closed, with the reason in the plan.
+workload needs-three {
+  data records {
+    sensitivity = S3
+    residency   = eu
+  }
+
+  service api : backend-api {
+    residency  = eu
+    depends_on = records
+    redundancy { vendors >= 3 }
+  }
+}

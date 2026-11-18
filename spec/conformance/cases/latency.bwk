@@ -1,0 +1,17 @@
+// Rule 10: with `from`, a latency target is a placement rule. An offer
+// qualifies only with a measured p95 from each region the users are in,
+// within the target. An offer with no measurement from there is excluded:
+// unmeasured fails closed. Without `from`, the target rules nothing out.
+workload checkout {
+  service eu-api : backend-api {
+    slo.p95 <= 50 ms from eu
+  }
+
+  service global-api : backend-api {
+    slo.p95 <= 120 ms from [ eu, us ]
+  }
+
+  service unpinned : backend-api {
+    slo.p95 <= 1 ms
+  }
+}

@@ -1,0 +1,41 @@
+# A typical fly.toml, used by `bailiwick import fly` and the import tests.
+app = "storefront-api"
+primary_region = "fra"
+
+[build]
+  image = "registry.example.com/acme/storefront-api:2.3.0"
+
+[env]
+  LOG_LEVEL = "info"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 2
+  processes = [
+    "app",
+    "admin",
+  ]
+
+[http_service.concurrency]
+  type = "requests"
+  soft_limit = 200
+  hard_limit = 250
+
+[[mounts]]
+  source = "pgdata"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "1gb"
+  cpus = 2
+
+[checks]
+  [checks.alive]
+    type = "tcp"
+    interval = "15s"
+    timeout = "2s"

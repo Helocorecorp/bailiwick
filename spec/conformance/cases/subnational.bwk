@@ -1,0 +1,11 @@
+// Sub-national residency. `california` admits only offers that state a
+// Californian subdivision. An offer in the right country whose subdivision
+// is unknown is excluded, and the reason says so.
+policy california-only {
+  residency = california
+}
+
+workload ccpa {
+  service api : backend-api {
+  }
+}

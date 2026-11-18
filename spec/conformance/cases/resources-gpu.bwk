@@ -1,0 +1,14 @@
+// Resource minimums are a feasibility rule. The fine-tune needs a GPU and
+// 32 GB; only offers that declare enough of both qualify. An offer that
+// declares no resources at all cannot satisfy any requirement.
+workload trainer {
+  job finetune : ml-inference {
+    deadline       = 12 h
+    checkpointable = true
+    resources { gpu >= 1  mem >= 32 GB }
+  }
+
+  service api : backend-api {
+    resources { vcpu >= 2  mem >= 4 GB }
+  }
+}

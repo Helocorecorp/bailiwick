@@ -1,0 +1,142 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "needs-three",
+      "policies": [],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "eu",
+          "sensitivity": 3,
+          "min_trust": 3,
+          "min_vendors": 3,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["b-fr", "c-fr", "e-de-he", "e-de-he-ck"],
+          "feasible_vendors": 3,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T1 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

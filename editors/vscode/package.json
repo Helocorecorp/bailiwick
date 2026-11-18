@@ -1,0 +1,94 @@
+{
+  "name": "bwk",
+  "displayName": "Bailiwick",
+  "description": "Bailiwick: declare what your workloads need — residency, sensitivity, latency, redundancy, resources — and check it as you type.",
+  "version": "0.1.0",
+  "publisher": "bailiwick",
+  "author": {
+    "name": "Phantombyter"
+  },
+  "icon": "icon.png",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Helocorecorp/bailiwick"
+  },
+  "homepage": "https://github.com/Helocorecorp/bailiwick#readme",
+  "bugs": {
+    "url": "https://github.com/Helocorecorp/bailiwick/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Formatters"
+  ],
+  "keywords": [
+    "bailiwick",
+    "bwk",
+    "infrastructure",
+    "data residency",
+    "compliance",
+    "gdpr",
+    "multi-cloud",
+    "policy",
+    "language server"
+  ],
+  "galleryBanner": {
+    "color": "#1E1E1E",
+    "theme": "dark"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:bwk"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "bwk",
+        "aliases": [
+          "Bailiwick",
+          "BWK"
+        ],
+        "extensions": [
+          ".bwk"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/bwk.svg",
+          "dark": "./icons/bwk.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bwk",
+        "scopeName": "source.bwk",
+        "path": "./syntaxes/bwk.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "Bailiwick",
+      "properties": {
+        "bwk.serverPath": {
+          "type": "string",
+          "default": "bailiwick",
+          "description": "Path to a `bailiwick` binary to run as the language server (`bailiwick lsp`). Leave as `bailiwick` to use the one bundled with the extension."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild extension.js --bundle --platform=node --target=node18 --format=cjs --external:vscode --minify --outfile=dist/extension.js",
+    "vscode:prepublish": "npm run build",
+    "test": "node test/server-path.test.js"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}

@@ -1,0 +1,13 @@
+// ccpa — California Consumer Privacy Act, as amended by the CPRA
+//
+// The law: the CCPA does not restrict where personal information is
+// stored. Businesses must implement reasonable security (Cal. Civ. Code
+// §1798.100(e)) and bind service providers by contract (§1798.140(ag)).
+//
+// This pack: offers must have a contract and an audit (T2 or better).
+//
+// Use `import "ccpa"`. Not legal advice.
+
+policy ccpa {
+  min_trust = T2
+}

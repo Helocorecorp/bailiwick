@@ -1,0 +1,101 @@
+(* Bailiwick (BWK) — v0 surface grammar.
+   This is the implemented grammar; the reference toolchain accepts
+   exactly this. Editors: editors/tree-sitter-bailiwick/grammar.js mirrors it.
+
+   Lexical: // line comments; identifiers [A-Za-z_][A-Za-z0-9_]* with
+   internal hyphens (backend-api); numbers are digits with one optional
+   decimal point; strings are double-quoted with \" \\ \n \t escapes.
+   Whitespace is insignificant. *)
+
+file        = { import | policy | workload | offer } ;
+
+import      = "import" , string ;                 (* path relative to this file *)
+
+policy      = "policy" , ident , "{" , { pol-field } , "}" ;
+pol-field   = ( "residency" , "=" , region )
+            | ( "min_trust" , "=" , tlevel )
+            | ( "deny" , "vendors"   , "=" , ident-list )
+            | ( "deny" , "countries" , "=" , ident-list )
+            | ( "deny" , "jurisdictions" , "=" , ident-list )   (* whose law may not compel plaintext *)
+            | keys
+            | ( "budget" , "<=" , money , "/" , ident ) ;
+
+workload    = "workload" , ident , "{" , { wl-item } , "}" ;
+wl-item     = profile | budget | value-of | data-block | service | job ;
+
+profile     = "profile" , "=" , ident ;
+budget      = "budget" , "=" , money , "/" , ident ;
+value-of    = "value_of" , "latency" , "=" , money , "per" , duration , "per" , number , "requests" ;
+
+data-block  = "data" , ident , "{" , { data-field } , "}" ;
+data-field  = ( "sensitivity" , "=" , slevel )
+            | ( "residency"  , "=" , region )
+            | keys ;
+
+keys        = "keys" , "=" , ( "customer" | "vendor" ) ;   (* who holds the encryption keys *)
+
+service     = "service" , ident , ":" , class , "{" , { svc-field } , "}" ;
+svc-field   = ( "image" , "=" , string )
+            | ( "sensitivity" , "=" , slevel )
+            | ( "residency"   , "=" , region )
+            | ( "slo" , "." , "p95" , "<=" , duration , [ "from" , ( region | region-list ) ] )
+                                                  (* with `from`, a placement rule: measured p95 from each region *)
+            | ( "redundancy" , "{" , "vendors" , ">=" , int , "}" )
+            | ( "depends_on" , "=" , ident )
+            | ( "resources" , "{" , { req-resource } , "}" )
+            | value-of
+            | cache-rule
+            | ( "requires" , "=" , ident-list )               (* edge features *)
+            | keys ;
+
+cache-rule  = "cache" , string , ( ( "for" , duration ) | "never" ) ;   (* path pattern must start with "/" *)
+
+job         = "job" , ident , ":" , class , "{" , { job-field } , "}" ;
+job-field   = ( "image" , "=" , string )
+            | ( "deadline" , "=" , duration )
+            | ( "checkpointable" , "=" , bool )
+            | ( "sensitivity" , "=" , slevel )
+            | ( "residency" , "=" , region )
+            | ( "resources" , "{" , { req-resource } , "}" )
+            | keys ;
+
+offer       = "offer" , ident , "{" , { offer-field } , "}" ;
+offer-field = ( "vendor"  , "=" , ident )
+            | ( "country" , "=" , ident )                 (* ISO 3166-1 alpha-2, lowercase *)
+            | ( "subdivision" , "=" , ident )             (* ISO 3166-2 code part, e.g. ca *)
+            | ( "trust"   , "=" , tlevel )
+            | ( "classes" , "=" , ident-list )
+            | ( "price"   , "=" , money , "/" , ident )
+            | ( "resources" , "{" , { prov-resource } , "}" )
+            | ( "features" , "=" , ident-list )            (* edge features provided *)
+            | ( "jurisdictions" , "=" , ident-list )       (* whose law reaches the operator, besides `country` *)
+            | ( "latency" , "{" , { "p95" , "from" , region , "=" , duration } , "}" )  (* measured *)
+            | keys ;                                       (* unstated means vendor *)
+
+(* Units requiring a minimum (>=) vs an offer stating what it provides (=). *)
+req-resource  = ( ( "vcpu" | "gpu" ) , ">=" , number )
+              | ( ( "mem" | "disk" ) , ">=" , datasize ) ;
+prov-resource = ( ( "vcpu" | "gpu" ) , "=" , number )
+              | ( ( "mem" | "disk" ) , "=" , datasize ) ;
+
+ident-list  = "[" , [ ident , { "," , ident } , [ "," ] ] , "]" ;
+region-list = "[" , region , { "," , region } , [ "," ] , "]" ;
+
+money       = "$" , number ;
+duration    = number , ( "ms" | "s" | "m" | "h" | "d" ) ;
+datasize    = number , ( "MB" | "GB" | "TB" ) ;           (* binary: 1 GB = 2^30 bytes *)
+slevel      = "S0" | "S1" | "S2" | "S3" ;
+tlevel      = "T0" | "T1" | "T2" | "T3" ;
+bool        = "true" | "false" ;
+region      = "global" | "eu" | "eea" | "nordics" | "us" | "ca" | "uk" | "apac"
+            | "california" | "quebec" | "brazil" | "china" | "india" | "australia"
+            | "gdpr-adequate" | "uk-adequate" ;
+class       = "frontend-static" | "backend-api" | "media-assets"
+            | "database" | "background-jobs" | "ml-inference" ;
+feature     = "cache" | "waf" | "websockets" | "http3" | "image-resizing" | "edge-functions" ;
+            (* features are open-ended idents; unknown ones warn *)
+
+int         = number ;   (* used where a whole number is required *)
+number      = digit , { digit } , [ "." , digit , { digit } ] ;
+string      = '"' , { character } , '"' ;
+ident       = letter , { letter | digit | "_" | internal-hyphen } ;

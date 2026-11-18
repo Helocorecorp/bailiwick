@@ -1,0 +1,23 @@
+{
+  "name": "tree-sitter-bailiwick",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for the Bailiwick (BWK)",
+  "main": "bindings/node",
+  "license": "Apache-2.0",
+  "keywords": ["parser", "tree-sitter", "bwk", "bailiwick"],
+  "devDependencies": {
+    "tree-sitter-cli": "^0.22.6"
+  },
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "test": "tree-sitter test",
+    "parse-examples": "tree-sitter parse ../../examples/*.bwk"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.bwk",
+      "file-types": ["bwk"],
+      "highlights": "queries/highlights.scm"
+    }
+  ]
+}

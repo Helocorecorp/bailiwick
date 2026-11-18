@@ -1,0 +1,12 @@
+{
+  "comments": { "lineComment": "//" },
+  "brackets": [["{", "}"], ["[", "]"]],
+  "autoClosingPairs": [
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" },
+    { "open": "\"", "close": "\"", "notIn": ["string", "comment"] }
+  ],
+  "surroundingPairs": [["{", "}"], ["[", "]"], ["\"", "\""]],
+  "folding": { "markers": { "start": "\\{", "end": "\\}" } },
+  "wordPattern": "[A-Za-z_][A-Za-z0-9_.-]*"
+}

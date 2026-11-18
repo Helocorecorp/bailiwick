@@ -1,0 +1,492 @@
+// FICTIONAL EXAMPLE OFFERS. Not real providers: the vendors are made up
+// (vendor-a, vendor-b, ...) and so is every value here, including prices,
+// capacity and trust levels. They exist only so the examples and tests have
+// something to run against. Countries and subdivisions are real places;
+// nothing here says anything about any real provider operating there.
+//
+// For real decisions, use offers your providers publish, or describe the
+// servers you actually run.
+
+offer e-de-he {
+  vendor      = vendor-e
+  country     = de
+  subdivision = he
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0460 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer e-de-he-ck {
+  vendor      = vendor-e
+  country     = de
+  subdivision = he
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+  keys          = customer
+}
+
+offer e-gb-eng {
+  vendor      = vendor-e
+  country     = gb
+  subdivision = eng
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0464 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer e-ca-qc {
+  vendor      = vendor-e
+  country     = ca
+  subdivision = qc
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0456 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer e-us-or {
+  vendor      = vendor-e
+  country     = us
+  subdivision = or
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0416 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+}
+
+offer e-sg {
+  vendor  = vendor-e
+  country = sg
+  trust   = T3
+  classes = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price   = $0.0500 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer e-us {
+  vendor   = vendor-e
+  country  = us
+  trust    = T3
+  classes  = [ frontend-static, media-assets ]
+  price    = $0.0850 / gb_egress
+  features = [ cache, waf, http3, edge-functions ]
+}
+
+offer f-de-he {
+  vendor      = vendor-f
+  country     = de
+  subdivision = he
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0420 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer f-de-he-ck {
+  vendor      = vendor-f
+  country     = de
+  subdivision = he
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+  keys          = customer
+}
+
+offer f-gb-eng {
+  vendor      = vendor-f
+  country     = gb
+  subdivision = eng
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0440 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer f-ca-qc {
+  vendor      = vendor-f
+  country     = ca
+  subdivision = qc
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0400 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer f-us-ia {
+  vendor      = vendor-f
+  country     = us
+  subdivision = ia
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0380 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+}
+
+offer f-jp-13 {
+  vendor      = vendor-f
+  country     = jp
+  subdivision = 13
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0480 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer f-us {
+  vendor   = vendor-f
+  country  = us
+  trust    = T3
+  classes  = [ frontend-static, media-assets ]
+  price    = $0.0200 / gb_egress
+  features = [ cache, waf, http3 ]
+}
+
+offer j-nl-nh {
+  vendor      = vendor-j
+  country     = nl
+  subdivision = nh
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0470 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer j-de-he {
+  vendor      = vendor-j
+  country     = de
+  subdivision = he
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0500 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer j-gb-eng {
+  vendor      = vendor-j
+  country     = gb
+  subdivision = eng
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0480 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer j-ca-on {
+  vendor      = vendor-j
+  country     = ca
+  subdivision = on
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0460 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer j-us-va {
+  vendor      = vendor-j
+  country     = us
+  subdivision = va
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0420 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+}
+
+offer j-jp-13 {
+  vendor      = vendor-j
+  country     = jp
+  subdivision = 13
+  trust       = T3
+  classes     = [ backend-api, database, media-assets, background-jobs, ml-inference ]
+  price       = $0.0520 / vcpu_hour
+  resources { vcpu = 96  mem = 384 GB  disk = 1000 GB  gpu = 8 }
+  jurisdictions = [ us ]
+}
+
+offer j-us {
+  vendor   = vendor-j
+  country  = us
+  trust    = T3
+  classes  = [ frontend-static, media-assets ]
+  price    = $0.0870 / gb_egress
+  features = [ cache, waf, http3 ]
+}
+
+offer k-de-he {
+  vendor      = vendor-k
+  country     = de
+  subdivision = he
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer k-nl-nh {
+  vendor      = vendor-k
+  country     = nl
+  subdivision = nh
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer k-us-ny {
+  vendor      = vendor-k
+  country     = us
+  subdivision = ny
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+}
+
+offer k-us-ca {
+  vendor      = vendor-k
+  country     = us
+  subdivision = ca
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+}
+
+offer k-ca-on {
+  vendor      = vendor-k
+  country     = ca
+  subdivision = on
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer k-gb-eng {
+  vendor      = vendor-k
+  country     = gb
+  subdivision = eng
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer k-sg {
+  vendor  = vendor-k
+  country = sg
+  trust   = T2
+  classes = [ backend-api, database, media-assets, background-jobs ]
+  price   = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer a-de-by {
+  vendor      = vendor-a
+  country     = de
+  subdivision = by
+  trust       = T2
+  classes     = [ backend-api, media-assets, background-jobs, database ]
+  price       = $0.0198 / vcpu_hour
+  resources { vcpu = 16  mem = 32 GB  disk = 320 GB  gpu = 0 }
+}
+
+offer a-fi-18 {
+  vendor      = vendor-a
+  country     = fi
+  subdivision = 18
+  trust       = T2
+  classes     = [ backend-api, media-assets, background-jobs, database ]
+  price       = $0.0198 / vcpu_hour
+  resources { vcpu = 16  mem = 32 GB  disk = 320 GB  gpu = 0 }
+}
+
+offer a-us-va {
+  vendor      = vendor-a
+  country     = us
+  subdivision = va
+  trust       = T2
+  classes     = [ backend-api, media-assets, background-jobs, database ]
+  price       = $0.0220 / vcpu_hour
+  resources { vcpu = 16  mem = 32 GB  disk = 320 GB  gpu = 0 }
+}
+
+offer a-us-or {
+  vendor      = vendor-a
+  country     = us
+  subdivision = or
+  trust       = T2
+  classes     = [ backend-api, media-assets, background-jobs, database ]
+  price       = $0.0220 / vcpu_hour
+  resources { vcpu = 16  mem = 32 GB  disk = 320 GB  gpu = 0 }
+}
+
+offer l-us {
+  vendor   = vendor-l
+  country  = us
+  trust    = T2
+  classes  = [ frontend-static, media-assets, backend-api ]
+  price    = $0.1200 / gb_egress
+  features = [ cache, waf, http3, edge-functions, websockets, image-resizing ]
+  resources { vcpu = 1  mem = 0.125 GB  disk = 0 GB  gpu = 0 }
+}
+
+offer m-lu {
+  vendor   = vendor-m
+  country  = lu
+  trust    = T2
+  classes  = [ frontend-static, media-assets ]
+  price    = $0.0180 / gb_egress
+  features = [ cache, waf, http3 ]
+}
+
+offer g-us-2 {
+  vendor   = vendor-g
+  country  = us
+  trust    = T2
+  classes  = [ backend-api, background-jobs ]
+  price    = $0.0000003 / request
+  features = [ cache, waf, http3, edge-functions, websockets ]
+  resources { vcpu = 1  mem = 0.125 GB  disk = 0 GB  gpu = 0 }
+}
+
+offer n-us-nj {
+  vendor      = vendor-n
+  country     = us
+  subdivision = nj
+  trust       = T2
+  classes     = [ ml-inference, background-jobs ]
+  price       = $2.2100 / gpu_hour
+  resources { vcpu = 128  mem = 1024 GB  disk = 2000 GB  gpu = 8 }
+}
+
+offer o-us-ca {
+  vendor      = vendor-o
+  country     = us
+  subdivision = ca
+  trust       = T2
+  classes     = [ ml-inference, background-jobs ]
+  price       = $1.9900 / gpu_hour
+  resources { vcpu = 104  mem = 900 GB  disk = 4000 GB  gpu = 8 }
+}
+
+offer p-is {
+  vendor  = vendor-p
+  country = is
+  trust   = T2
+  classes = [ ml-inference, background-jobs ]
+  price   = $1.7500 / gpu_hour
+  resources { vcpu = 96  mem = 768 GB  disk = 2000 GB  gpu = 8 }
+}
+
+offer q-nl {
+  vendor  = vendor-q
+  country = nl
+  trust   = T1
+  classes = [ ml-inference, background-jobs ]
+  price   = $0.4400 / gpu_hour
+  resources { vcpu = 16  mem = 62 GB  disk = 200 GB  gpu = 1 }
+}
+
+offer r-de-he {
+  vendor      = vendor-r
+  country     = de
+  subdivision = he
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 2560 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer s-nl-nh {
+  vendor      = vendor-s
+  country     = nl
+  subdivision = nh
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 24  mem = 96 GB  disk = 1800 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer s-us-nj {
+  vendor      = vendor-s
+  country     = us
+  subdivision = nj
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0180 / vcpu_hour
+  resources { vcpu = 24  mem = 96 GB  disk = 1800 GB  gpu = 0 }
+}
+
+offer c-ca-qc {
+  vendor      = vendor-c
+  country     = ca
+  subdivision = qc
+  trust       = T2
+  classes     = [ backend-api, media-assets, background-jobs, database ]
+  price       = $0.0220 / vcpu_hour
+  resources { vcpu = 8  mem = 32 GB  disk = 400 GB  gpu = 0 }
+}
+
+offer b-nl-nh {
+  vendor      = vendor-b
+  country     = nl
+  subdivision = nh
+  trust       = T2
+  classes     = [ backend-api, database, media-assets, background-jobs ]
+  price       = $0.0260 / vcpu_hour
+  resources { vcpu = 32  mem = 128 GB  disk = 600 GB  gpu = 0 }
+}
+
+offer t-ch {
+  vendor  = vendor-t
+  country = ch
+  trust   = T2
+  classes = [ backend-api, database, media-assets, background-jobs ]
+  price   = $0.0300 / vcpu_hour
+  resources { vcpu = 16  mem = 64 GB  disk = 400 GB  gpu = 0 }
+}
+
+offer u-de-he {
+  vendor      = vendor-u
+  country     = de
+  subdivision = he
+  trust       = T2
+  classes     = [ backend-api, background-jobs, database ]
+  price       = $0.0170 / vcpu_hour
+  resources { vcpu = 16  mem = 128 GB  disk = 500 GB  gpu = 0 }
+  jurisdictions = [ us ]
+}
+
+offer u-us-va {
+  vendor      = vendor-u
+  country     = us
+  subdivision = va
+  trust       = T2
+  classes     = [ backend-api, background-jobs, database ]
+  price       = $0.0170 / vcpu_hour
+  resources { vcpu = 16  mem = 128 GB  disk = 500 GB  gpu = 0 }
+}

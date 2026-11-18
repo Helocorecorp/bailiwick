@@ -1,0 +1,61 @@
+name: playground
+
+# Builds the browser playground (the real toolchain compiled to
+# WebAssembly) and publishes it with GitHub Pages from main.
+# Enable once: Settings → Pages → Source: GitHub Actions.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build
+        run: playground/build.sh
+      - name: The page loads and evaluates a program
+        run: |
+          npm install --no-save playwright@1.47.2
+          npx playwright install --with-deps chromium
+          (cd playground/site && python3 -m http.server 8765 &) && sleep 1
+          node -e '
+            const { chromium } = require("playwright");
+            (async () => {
+              const b = await chromium.launch(); const p = await b.newPage();
+              const errs = []; p.on("pageerror", e => errs.push(e.message));
+              await p.goto("http://localhost:8765/"); await p.waitForSelector(".unit");
+              const status = await p.textContent(".status");
+              if (errs.length || !/Deploys/.test(status)) { console.error(errs, status); process.exit(1); }
+              console.log("ok:", status.replace(/\s+/g, " ").trim()); await b.close();
+            })();'
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: playground/site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

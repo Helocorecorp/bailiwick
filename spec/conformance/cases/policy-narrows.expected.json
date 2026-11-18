@@ -1,0 +1,90 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "narrowed",
+      "policies": ["eu-only"],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "api",
+          "class": "backend-api",
+          "residency": "eu",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "e-de-he", "e-de-he-ck", "a-de-2", "c-fr-2"],
+          "feasible_vendors": 7,
+          "excluded": [
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

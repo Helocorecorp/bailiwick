@@ -1,0 +1,13 @@
+// Edge features are a feasibility rule. The cache rules on `www`
+// implicitly require the `cache` feature; `media` requires it explicitly.
+// Only offers that list the feature qualify.
+workload site {
+  service www : frontend-static {
+    cache "/assets/*" for 30 d
+    cache "/api/*" never
+  }
+
+  service media : media-assets {
+    requires = [ cache ]
+  }
+}

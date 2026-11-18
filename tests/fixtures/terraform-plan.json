@@ -1,0 +1,54 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.8",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {"address": "aws_instance.api", "mode": "managed", "type": "aws_instance", "name": "api",
+         "provider_name": "registry.terraform.io/hashicorp/aws",
+         "values": {"instance_type": "t3.small", "tags": {"Name": "api"}}},
+        {"address": "aws_db_instance.main", "mode": "managed", "type": "aws_db_instance", "name": "main",
+         "provider_name": "registry.terraform.io/hashicorp/aws",
+         "values": {"instance_class": "db.t3.medium", "tags": {"bailiwick": "customers"}}},
+        {"address": "aws_s3_bucket.backups", "mode": "managed", "type": "aws_s3_bucket", "name": "backups",
+         "provider_name": "registry.terraform.io/hashicorp/aws",
+         "values": {"bucket": "acme-backups", "tags": {"bailiwick": "customers"}}},
+        {"address": "aws_iam_role.api", "mode": "managed", "type": "aws_iam_role", "name": "api",
+         "provider_name": "registry.terraform.io/hashicorp/aws", "values": {}},
+        {"address": "google_compute_instance.reports[0]", "mode": "managed", "type": "google_compute_instance",
+         "name": "reports", "index": 0, "provider_name": "registry.terraform.io/hashicorp/google",
+         "values": {"zone": "europe-west3-a", "labels": {"bailiwick": "reports"}}},
+        {"address": "data.aws_ami.ubuntu", "mode": "data", "type": "aws_ami", "name": "ubuntu",
+         "provider_name": "registry.terraform.io/hashicorp/aws", "values": {}}
+      ],
+      "child_modules": [
+        {"address": "module.cache", "resources": [
+          {"address": "module.cache.hcloud_server.redis", "mode": "managed", "type": "hcloud_server", "name": "redis",
+           "provider_name": "registry.terraform.io/hetznercloud/hcloud",
+           "values": {"location": "fsn1", "labels": {"bailiwick": "api"}}}
+        ]}
+      ]
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {"name": "aws", "full_name": "registry.terraform.io/hashicorp/aws",
+              "expressions": {"region": {"constant_value": "eu-central-1"}}},
+      "aws.us": {"name": "aws", "full_name": "registry.terraform.io/hashicorp/aws", "alias": "us",
+                 "expressions": {"region": {"constant_value": "us-east-1"}}}
+    },
+    "root_module": {
+      "resources": [
+        {"address": "aws_instance.api", "mode": "managed", "type": "aws_instance", "name": "api", "provider_config_key": "aws"},
+        {"address": "aws_db_instance.main", "mode": "managed", "type": "aws_db_instance", "name": "main", "provider_config_key": "aws"},
+        {"address": "aws_s3_bucket.backups", "mode": "managed", "type": "aws_s3_bucket", "name": "backups", "provider_config_key": "aws.us"},
+        {"address": "google_compute_instance.reports", "mode": "managed", "type": "google_compute_instance", "name": "reports", "provider_config_key": "google"}
+      ],
+      "module_calls": {
+        "cache": {"source": "./cache", "module": {"resources": [
+          {"address": "hcloud_server.redis", "mode": "managed", "type": "hcloud_server", "name": "redis", "provider_config_key": "cache:hcloud"}
+        ]}}
+      }
+    }
+  }
+}

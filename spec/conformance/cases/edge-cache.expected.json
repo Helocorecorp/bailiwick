@@ -1,0 +1,339 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "site",
+      "policies": [],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "www",
+          "class": "frontend-static",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": ["cache"],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["g-us", "h-si"],
+          "feasible_vendors": 2,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `frontend-static`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "service",
+          "name": "media",
+          "class": "media-assets",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": ["cache"],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["g-us", "h-si"],
+          "feasible_vendors": 2,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "b-fr",
+              "reasons": [
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr",
+              "reasons": [
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                },
+                {
+                  "kind": "feature",
+                  "reason": "does not provide feature `cache`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

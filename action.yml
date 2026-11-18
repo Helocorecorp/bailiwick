@@ -1,0 +1,159 @@
+name: Bailiwick
+description: Check where each part of your software may run, and hold your infrastructure plans to the rules, on every pull request.
+author: Helocore Corp.
+branding:
+  icon: shield
+  color: red
+
+inputs:
+  file:
+    description: "The Bailiwick file to check."
+    default: bailiwick.bwk
+  policy:
+    description: "Extra policy files or rule packs (e.g. `gdpr hipaa`), space-separated."
+    default: ""
+  catalog:
+    description: "A catalog of offers. Empty uses the program's own `offer` blocks."
+    default: ""
+  plan:
+    description: "Infrastructure to hold to the rules, space-separated. A Terraform plan in JSON (`terraform show -json plan.out > plan.json`) and/or Kubernetes manifests."
+    default: ""
+  vendor:
+    description: "Whose cluster the Kubernetes manifests run on (aws, gcp, azure, digitalocean, hetzner)."
+    default: ""
+  compare:
+    description: "On pull requests, prove whether the change loosens any rule compared with the base branch, for every offer any provider could make."
+    default: "true"
+  fail-on-loosening:
+    description: "Fail the job when the change loosens a rule (it is always reported)."
+    default: "false"
+  comment:
+    description: "Post the result as a pull-request comment, updated in place on every push. Needs `pull-requests: write`."
+    default: "true"
+  fail:
+    description: "Fail the job when a workload fails closed or the plan breaks the rules."
+    default: "true"
+
+outputs:
+  deployable:
+    description: "`true` if every workload deploys."
+    value: ${{ steps.run.outputs.deployable }}
+  plan-ok:
+    description: "`true` if the infrastructure plan follows the rules (or no plan was given)."
+    value: ${{ steps.run.outputs.plan_ok }}
+  loosened:
+    description: "`true` if the pull request loosens a rule compared with the base branch."
+    value: ${{ steps.run.outputs.loosened }}
+
+runs:
+  using: composite
+  steps:
+    - name: Cache the toolchain
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/bailiwick
+        key: bailiwick-${{ runner.os }}-${{ runner.arch }}-${{ github.action_ref || github.sha }}
+
+    - name: Build the toolchain
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: cargo install --path "$GITHUB_ACTION_PATH" --root "$RUNNER_TEMP/bailiwick" --locked --quiet
+
+    - name: Check
+      id: run
+      shell: bash
+      env:
+        BWK_FILE: ${{ inputs.file }}
+        BWK_POLICY: ${{ inputs.policy }}
+        BWK_CATALOG: ${{ inputs.catalog }}
+        BWK_PLAN: ${{ inputs.plan }}
+        BWK_VENDOR: ${{ inputs.vendor }}
+        BWK_COMPARE: ${{ inputs.compare }}
+      run: |
+        set -u
+        bwk="$RUNNER_TEMP/bailiwick/bin/bailiwick"
+        args=()
+        for p in $BWK_POLICY; do args+=(--policy "$p"); done
+        [ -n "$BWK_CATALOG" ] && args+=(--catalog "$BWK_CATALOG")
+        out="$RUNNER_TEMP/bailiwick-report.md"
+        {
+          echo "<!-- bailiwick -->"
+          echo "### Bailiwick"
+          echo
+        } > "$out"
+
+        deployable=true
+        if ! "$bwk" check "$BWK_FILE" "${args[@]}" > "$RUNNER_TEMP/bwk-check.txt" 2>&1; then
+          deployable=false
+          { echo "**\`$BWK_FILE\` has errors:**"; echo; echo '```'; cat "$RUNNER_TEMP/bwk-check.txt"; echo '```'; } >> "$out"
+        elif ! "$bwk" explain "$BWK_FILE" "${args[@]}" --markdown >> "$out"; then
+          deployable=false
+        fi
+
+        plan_ok=true
+        if [ -n "$BWK_PLAN" ]; then
+          pargs=()
+          [ -n "$BWK_VENDOR" ] && pargs+=(--vendor "$BWK_VENDOR")
+          for p in $BWK_POLICY; do pargs+=(--policy "$p"); done
+          # shellcheck disable=SC2086
+          "$bwk" check-plan "$BWK_FILE" $BWK_PLAN "${pargs[@]}" --markdown >> "$out" 2>&1 || plan_ok=false
+        fi
+
+        loosened=false
+        if [ "$BWK_COMPARE" = "true" ] && [ -n "${GITHUB_BASE_REF:-}" ] && [ "$deployable$plan_ok" != "" ]; then
+          base="$RUNNER_TEMP/bailiwick-base"
+          if git fetch -q --depth=1 origin "$GITHUB_BASE_REF" 2>/dev/null \
+            && git worktree add -q --detach "$base" FETCH_HEAD 2>/dev/null \
+            && [ -f "$base/$BWK_FILE" ]; then
+            pa=()
+            for p in $BWK_POLICY; do pa+=(--policy "$p"); done
+            if "$bwk" prove "$BWK_FILE" --no-looser-than "$base/$BWK_FILE" "${pa[@]}" > "$RUNNER_TEMP/bwk-prove.txt" 2>&1; then
+              { echo "#### Compared with \`$GITHUB_BASE_REF\`: loosens nothing"; echo
+                echo "Proven for every offer any provider could make: this change allows nothing the base branch did not."; echo; } >> "$out"
+            else
+              loosened=true
+              { echo "#### Compared with \`$GITHUB_BASE_REF\`: **loosens the rules**"; echo
+                echo "Offers the base branch refused that this change would allow:"; echo
+                echo '```'; sed "s|$base/||g" "$RUNNER_TEMP/bwk-prove.txt"; echo '```'; echo; } >> "$out"
+            fi
+            git worktree remove --force "$base" 2>/dev/null || true
+          fi
+        fi
+        echo "loosened=$loosened" >> "$GITHUB_OUTPUT"
+
+        cat "$out" >> "$GITHUB_STEP_SUMMARY"
+        echo "deployable=$deployable" >> "$GITHUB_OUTPUT"
+        echo "plan_ok=$plan_ok" >> "$GITHUB_OUTPUT"
+        echo "report=$out" >> "$GITHUB_OUTPUT"
+
+    - name: Comment on the pull request
+      if: inputs.comment == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      env:
+        REPORT: ${{ steps.run.outputs.report }}
+      with:
+        script: |
+          const fs = require("fs");
+          let body = fs.readFileSync(process.env.REPORT, "utf8");
+          if (body.length > 60000) body = body.slice(0, 60000) + "\n\n_(truncated; the full report is in the job summary)_\n";
+          const { owner, repo } = context.repo;
+          const issue_number = context.issue.number;
+          const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+          const mine = comments.find((c) => c.body && c.body.startsWith("<!-- bailiwick -->"));
+          if (mine) await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id, body });
+          else await github.rest.issues.createComment({ owner, repo, issue_number, body });
+
+    - name: Verdict
+      if: inputs.fail == 'true' && (steps.run.outputs.deployable != 'true' || steps.run.outputs.plan_ok != 'true')
+      shell: bash
+      run: |
+        echo "::error::Bailiwick: a workload fails closed or the infrastructure plan breaks the rules (see the job summary)"
+        exit 1
+
+    - name: Loosening
+      if: inputs.fail-on-loosening == 'true' && steps.run.outputs.loosened == 'true'
+      shell: bash
+      run: |
+        echo "::error::Bailiwick: this change loosens the rules compared with the base branch (see the job summary)"
+        exit 1

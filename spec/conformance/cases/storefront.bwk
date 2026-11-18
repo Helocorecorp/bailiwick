@@ -1,0 +1,25 @@
+workload storefront {
+  profile = balanced
+  budget  = $40000 / month
+
+  data customer_db {
+    sensitivity = S3
+    residency   = eu
+  }
+
+  service web : backend-api {
+    residency   = eu
+    slo.p95    <= 200 ms
+    redundancy { vendors >= 2 }
+    depends_on  = customer_db
+  }
+
+  service media : media-assets {
+    sensitivity = S0
+  }
+
+  job nightly_report : background-jobs {
+    deadline       = 6 h
+    checkpointable = true
+  }
+}

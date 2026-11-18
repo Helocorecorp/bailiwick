@@ -1,0 +1,279 @@
+{
+  "version": "bwk-plan/0",
+  "workloads": [
+    {
+      "workload": "storefront",
+      "policies": [],
+      "deployable": true,
+      "blocking": [],
+      "units": [
+        {
+          "kind": "service",
+          "name": "web",
+          "class": "backend-api",
+          "residency": "eu",
+          "sensitivity": 3,
+          "min_trust": 3,
+          "min_vendors": 2,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": 200,
+          "slo_from": [],
+          "feasible": ["b-fr", "c-fr", "e-de-he", "e-de-he-ck"],
+          "feasible_vendors": 3,
+          "excluded": [
+            {
+              "offer": "a-de",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "d-fi",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "e-us-va",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "f-us-ca",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                }
+              ]
+            },
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `backend-api`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T1 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "residency",
+                  "reason": "country `us` is outside residency `eu`"
+                },
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "trust",
+                  "reason": "trust T2 is below the required T3"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "service",
+          "name": "media",
+          "class": "media-assets",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "e-us-va", "f-us-ca", "g-us", "h-si"],
+          "feasible_vendors": 8,
+          "excluded": [
+            {
+              "offer": "i-de",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                }
+              ]
+            },
+            {
+              "offer": "e-de-he-ck",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `media-assets`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        },
+        {
+          "kind": "job",
+          "name": "nightly_report",
+          "class": "background-jobs",
+          "residency": "global",
+          "sensitivity": 0,
+          "min_trust": 1,
+          "min_vendors": null,
+          "resources": null,
+          "requires": [],
+          "customer_keys": null,
+          "slo_p95_ms": null,
+          "slo_from": [],
+          "feasible": ["a-de", "b-fr", "c-fr", "d-fi", "e-us-va", "f-us-ca", "i-de", "e-de-he", "e-de-he-ck"],
+          "feasible_vendors": 7,
+          "excluded": [
+            {
+              "offer": "g-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "h-si",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "a-de-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "b-us",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            },
+            {
+              "offer": "c-fr-2",
+              "reasons": [
+                {
+                  "kind": "capability",
+                  "reason": "does not offer class `background-jobs`"
+                }
+              ]
+            }
+          ],
+          "fails_closed": null
+        }
+      ]
+    }
+  ]
+}

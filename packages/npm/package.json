@@ -1,0 +1,18 @@
+{
+  "name": "@helocore/bailiwick",
+  "version": "0.1.0",
+  "description": "Bailiwick: say what your software needs, not where it runs. Check where each part may legally run, with GDPR, HIPAA, PIPEDA and more built in. The real toolchain, compiled to WebAssembly: no install step, no native binary.",
+  "keywords": ["bailiwick", "data-residency", "gdpr", "hipaa", "pipeda", "compliance", "terraform", "kubernetes", "policy-as-code"],
+  "homepage": "https://github.com/Helocorecorp/bailiwick",
+  "repository": { "type": "git", "url": "git+https://github.com/Helocorecorp/bailiwick.git", "directory": "packages/npm" },
+  "license": "Apache-2.0",
+  "author": "Phantombyter",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": { "bailiwick": "bin/bailiwick.js" },
+  "files": ["index.js", "index.d.ts", "bin/", "bailiwick.wasm", "LICENSE"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node test.js"
+  }
+}

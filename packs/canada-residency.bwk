@@ -1,0 +1,15 @@
+// canada-residency — keep data in Canada
+//
+// The law: some Canadian rules do require data to stay in Canada, notably
+// Nova Scotia's Personal Information International Disclosure Protection
+// Act for public bodies and their service providers, and many federal and
+// provincial government contracts.
+//
+// This pack: everything runs in Canada.
+//
+// Use `import "canada-residency"`, often together with "pipeda".
+// Not legal advice.
+
+policy canada-residency {
+  residency = ca
+}

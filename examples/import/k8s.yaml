@@ -1,0 +1,138 @@
+# A typical set of Kubernetes manifests, used by `bailiwick import k8s` and the
+# import tests. One namespace, an API Deployment with a PVC, a Postgres
+# StatefulSet, a CronJob needing a GPU, plus objects BWK has no use for.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shop
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: shop
+  labels:
+    app.kubernetes.io/name: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      nodeSelector:
+        topology.kubernetes.io/region: eu-central-1
+      containers:
+        - name: api
+          image: registry.example.com/acme/api:1.4.2
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: url
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: uploads
+              mountPath: /data/uploads
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: uploads
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads
+  namespace: shop
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+  namespace: shop
+spec:
+  serviceName: db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata
+      spec:
+        resources:
+          requests:
+            storage: 50Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nightly-report
+  namespace: shop
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 21600
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: report
+              image: registry.example.com/acme/api:1.4.2
+              command: ["python", "-m", "reports.nightly"]
+              resources:
+                limits:
+                  nvidia.com/gpu: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: shop
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: shop
+data:
+  settings.yaml: |
+    log_level: info
+    features:
+      - search

@@ -1,0 +1,15 @@
+// A policy wider than the unit's own residency changes nothing:
+// `eu ∩ eea` is `eu`, `nordics ∩ eea` is `nordics`.
+policy eea-only {
+  residency = eea
+}
+
+workload contained {
+  service api : backend-api {
+    residency = eu
+  }
+
+  job batch : background-jobs {
+    residency = nordics
+  }
+}

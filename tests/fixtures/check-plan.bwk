@@ -1,0 +1,16 @@
+import "eu-sovereign"
+
+workload shop {
+  data customers {
+    sensitivity = S3
+    residency   = eu
+  }
+
+  service api : backend-api {
+    depends_on = customers
+  }
+
+  job reports : background-jobs {
+    deadline = 6 h
+  }
+}

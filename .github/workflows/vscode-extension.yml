@@ -1,0 +1,118 @@
+name: vscode-extension
+
+# Builds the Bailiwick VS Code extension with the language server bundled
+# for each platform, and publishes it when a release tag is pushed:
+#
+#   git tag v0.1.0 && git push origin v0.1.0
+#
+# Publishing needs repository secrets: VSCE_PAT (Visual Studio Marketplace)
+# and, optionally, OVSX_PAT (Open VSX, for Cursor, VSCodium and Windsurf).
+# Without them the packages are built and attached to the run, nothing is
+# published.
+
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  server:
+    name: server (${{ matrix.target }})
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - { target: linux-x64,    os: ubuntu-latest,  rust: x86_64-unknown-linux-musl,  bin: bailiwick,     zig: true }
+          - { target: linux-arm64,  os: ubuntu-latest,  rust: aarch64-unknown-linux-musl, bin: bailiwick,     zig: true }
+          - { target: darwin-x64,   os: macos-latest,   rust: x86_64-apple-darwin,        bin: bailiwick }
+          - { target: darwin-arm64, os: macos-latest,   rust: aarch64-apple-darwin,       bin: bailiwick }
+          - { target: win32-x64,    os: windows-latest, rust: x86_64-pc-windows-msvc,     bin: bailiwick.exe }
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust }}
+      # Static Linux binaries for any distribution, via zig as the linker.
+      - if: matrix.zig
+        run: pip install ziglang==0.13.0 && cargo install cargo-zigbuild --locked --version 0.19.8
+      - name: Build
+        run: |
+          if [ "${{ matrix.zig }}" = "true" ]; then
+            cargo zigbuild --release --target ${{ matrix.rust }}
+          else
+            cargo build --release --target ${{ matrix.rust }}
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-${{ matrix.target }}
+          path: target/${{ matrix.rust }}/release/${{ matrix.bin }}
+          if-no-files-found: error
+
+  package:
+    needs: server
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: editors/vscode
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/download-artifact@v4
+        with:
+          path: servers
+      - name: Install, test, bundle
+        run: |
+          npm install --no-audit --no-fund
+          npm test
+          npm run build
+          cp ../../LICENSE ../../NOTICE .
+      - name: The bundled Linux server answers the language server protocol
+        run: |
+          chmod +x "$GITHUB_WORKSPACE/servers/server-linux-x64/bailiwick"
+          python3 - "$GITHUB_WORKSPACE/servers/server-linux-x64/bailiwick" <<'EOF'
+          import json, subprocess, sys
+          p = subprocess.Popen([sys.argv[1], "lsp"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+          def send(m):
+              b = json.dumps(m).encode(); p.stdin.write(b"Content-Length: %d\r\n\r\n" % len(b) + b); p.stdin.flush()
+          send({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"capabilities": {}}})
+          head = b""
+          while not head.endswith(b"\r\n\r\n"): head += p.stdout.read(1)
+          n = int([l for l in head.decode().split("\r\n") if l.lower().startswith("content-length")][0].split(":")[1])
+          caps = json.loads(p.stdout.read(n))["result"]["capabilities"]
+          assert caps["hoverProvider"] and caps["documentFormattingProvider"], caps
+          print("lsp ok:", sorted(caps))
+          p.kill()
+          EOF
+      - name: Package one extension per platform, plus a universal fallback
+        run: |
+          mkdir -p dist-vsix
+          for t in linux-x64 linux-arm64 darwin-x64 darwin-arm64 win32-x64; do
+            rm -rf server && mkdir server
+            cp "$GITHUB_WORKSPACE"/servers/server-$t/* server/
+            chmod +x server/* || true
+            npx --yes @vscode/vsce@3 package --target $t --no-git-tag-version -o dist-vsix/bwk-$t.vsix
+          done
+          rm -rf server
+          npx --yes @vscode/vsce@3 package --no-git-tag-version -o dist-vsix/bwk-universal.vsix
+          ls -la dist-vsix
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: editors/vscode/dist-vsix/*.vsix
+      - name: Publish to the Visual Studio Marketplace
+        if: startsWith(github.ref, 'refs/tags/v') && env.VSCE_PAT != ''
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx --yes @vscode/vsce@3 publish --packagePath dist-vsix/*.vsix
+      - name: Publish to Open VSX
+        if: startsWith(github.ref, 'refs/tags/v') && env.OVSX_PAT != ''
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: for f in dist-vsix/*.vsix; do npx --yes ovsx@0.10 publish "$f" -p "$OVSX_PAT"; done

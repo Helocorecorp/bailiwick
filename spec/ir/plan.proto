@@ -1,0 +1,64 @@
+// Bailiwick — plan IR, version bwk-plan/0.
+//
+// The output of feasibility evaluation (`bailiwick explain --json` and
+// `--proto`). This is the shape the conformance suite compares
+// byte-for-byte, so field order in the JSON mapping is fixed to the order
+// below (`requires` is the exception: it was added after `resources` and
+// is serialized right after it in JSON while keeping field number 13 on
+// the wire). It records, for every routable unit, the effective
+// constraints after dependencies and policies were folded in, the
+// feasible offers, and for each excluded offer the exact reasons.
+//
+// The plan says what is *allowed*. Choosing among the feasible offers is
+// the optimizer's job and is deliberately outside this schema.
+
+syntax = "proto3";
+
+package bwk.plan.v0;
+
+import "bwk.proto";  // for bwk.v0.Resources
+
+message Plan {
+  string version = 1;                  // always "bwk-plan/0"
+  repeated WorkloadPlan workloads = 2;
+}
+
+message WorkloadPlan {
+  string workload = 1;
+  repeated string policies = 2;        // names of the policies in force
+  bool deployable = 3;                 // true iff `blocking` is empty
+  repeated string blocking = 4;        // fail-closed reasons, one per blocked unit
+  repeated UnitPlan units = 5;
+}
+
+message UnitPlan {
+  string kind = 1;                     // "service" | "job"
+  string name = 2;
+  string class = 3;
+  string residency = 4;                // effective, after dependencies and policies:
+                                       // a region name, "{a,b}" for an unnamed set, or "<conflict>"
+  uint32 sensitivity = 5;              // effective (max over the unit and its data)
+  uint32 min_trust = 6;                // effective floor (spec table, raised by policy)
+  optional int64 min_vendors = 7;
+  optional bwk.v0.Resources resources = 8;  // minimums the unit requires
+  repeated string feasible = 9;        // offer ids, catalog order
+  uint32 feasible_vendors = 10;        // distinct vendors among `feasible`
+  repeated Excluded excluded = 11;
+  optional string fails_closed = 12;   // reason, when this unit blocks deployment
+  repeated string requires = 13;       // edge features the unit requires (explicit + implied cache)
+  optional string customer_keys = 14;  // what requires customer-held keys, e.g. "data `patients`"
+  optional double slo_p95_ms = 15;     // the p95 SLO
+  repeated string slo_from = 16;       // where it is measured from; with any, offers must meet it there
+}
+
+message Excluded {
+  string offer = 1;
+  repeated Reason reasons = 2;         // every rule the offer failed, not just the first
+}
+
+message Reason {
+  // capability | residency | policy_country | trust | policy_vendor | resource | feature |
+  // jurisdiction | key_custody | latency | missing_field
+  string kind = 1;
+  string reason = 2;                   // human-readable, stable wording
+}

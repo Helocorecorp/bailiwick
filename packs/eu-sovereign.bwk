@@ -1,0 +1,18 @@
+// eu-sovereign — EU data beyond the reach of non-EU surveillance law
+//
+// The law: after Schrems II (CJEU C-311/18), a transfer is lawful only if
+// the data is protected from foreign access in practice, not just on paper.
+// Laws such as US FISA §702 and the CLOUD Act let authorities compel a
+// provider headquartered there, wherever its servers are.
+//
+// This pack: everything stays in the EU, and no offer within reach of US,
+// Chinese or Russian law is allowed unless you hold the encryption keys,
+// so that compelled access yields only ciphertext.
+//
+// Use `import "eu-sovereign"`, alone or with "gdpr". Not legal advice.
+
+policy eu-sovereign {
+  residency          = eu
+  min_trust          = T2
+  deny jurisdictions = [ us, cn, ru ]
+}
