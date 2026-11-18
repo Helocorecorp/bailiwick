@@ -127,7 +127,7 @@ steps:
       plan: plan.json            # optional: a Terraform plan or Kubernetes manifests
 ```
 
-**Without Rust.** The same toolchain, compiled to WebAssembly:
+**Without Rust.** The same toolchain, compiled to WebAssembly. *Not yet published to npm or PyPI;* until then, build the packages from [`packages/`](packages/).
 
 ```sh
 npx @helocore/bailiwick explain bailiwick.bwk --catalog offers.bwk --policy gdpr
@@ -169,7 +169,7 @@ The [playground](playground/) is this toolchain compiled to WebAssembly: write a
 
 ## Install
 
-**Editor.** Install *Bailiwick* from the VS Code Marketplace (or Open VSX for Cursor, VSCodium and Windsurf). The language server is bundled: errors as you type, completion, hover, go-to-definition, outline and formatting.
+**Editor.** *Bailiwick* for VS Code (and Open VSX for Cursor, VSCodium and Windsurf) is not on the marketplaces yet; package it from [`editors/vscode/`](editors/vscode/) with `npx @vscode/vsce package` and install the `.vsix`. The language server is bundled: errors as you type, completion, hover, go-to-definition, outline and formatting.
 
 **Command line.** With a Rust toolchain:
 

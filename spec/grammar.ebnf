@@ -4,8 +4,12 @@
 
    Lexical: // line comments; identifiers [A-Za-z_][A-Za-z0-9_]* with
    internal hyphens (backend-api); numbers are digits with one optional
-   decimal point; strings are double-quoted with \" \\ \n \t escapes.
-   Whitespace is insignificant. *)
+   decimal point, at most 2^53 (9007199254740992); strings are
+   double-quoted with \" \\ \n \t escapes. Whitespace is insignificant.
+
+   Within one block, a single-valued field may appear at most once; a
+   repeat is an error, never an override. Only `depends_on`, `requires`,
+   `cache`, `deny ...` and nested data/service/job blocks may repeat. *)
 
 file        = { import | policy | workload | offer } ;
 

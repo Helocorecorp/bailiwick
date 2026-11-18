@@ -65,6 +65,23 @@ fn level(prefix: char, s: &str) -> Option<u8> {
 
 const TOP_LEVEL_KEYWORDS: [&str; 4] = ["workload", "offer", "policy", "import"];
 
+// Fields that hold one value. Writing one twice is an error rather than
+// "last one wins": a stray second `residency = us` after `residency = eu`
+// would otherwise silently loosen the rule. Fields that accumulate
+// (`depends_on`, `requires`, `cache`, `deny ...`, nested blocks) are absent.
+const ONCE_POLICY: [&str; 4] = ["residency", "min_trust", "keys", "budget"];
+const ONCE_WORKLOAD: [&str; 3] = ["profile", "budget", "value_of"];
+const ONCE_DATA: [&str; 3] = ["sensitivity", "residency", "keys"];
+const ONCE_SERVICE: [&str; 8] =
+    ["image", "sensitivity", "residency", "slo", "redundancy", "resources", "value_of", "keys"];
+const ONCE_JOB: [&str; 7] =
+    ["image", "deadline", "checkpointable", "sensitivity", "residency", "resources", "keys"];
+const ONCE_OFFER: [&str; 11] = [
+    "vendor", "country", "subdivision", "trust", "classes", "price", "resources", "features",
+    "keys", "jurisdictions", "latency",
+];
+const ONCE_RESOURCES: [&str; 4] = ["vcpu", "gpu", "mem", "disk"];
+
 const UNIT_RESOURCES_HINT: &str =
     "workload resources are minimums; write `vcpu >= 2`, `mem >= 4 GB`";
 const OFFER_RESOURCES_HINT: &str =
@@ -92,8 +109,34 @@ impl Parser {
     }
 
     fn err(&mut self, msg: impl Into<String>) {
-        let t = self.peek();
-        self.diags.push(Diag::error(t.line, t.col, msg));
+        let (l, c) = (self.peek().line, self.peek().col);
+        self.err_at(l, c, msg);
+    }
+
+    /// Record an error, unless one is already recorded at this exact
+    /// position: the first error there is the cause, later ones are noise
+    /// from recovering after it.
+    fn err_at(&mut self, line: usize, col: usize, msg: impl Into<String>) {
+        if self.diags.iter().any(|d| d.is_error() && d.line == line && d.col == col) {
+            return;
+        }
+        self.diags.push(Diag::error(line, col, msg));
+    }
+
+    /// Diagnose a single-valued field written a second time in one block.
+    /// Called with the field keyword as the current token.
+    fn check_once(&mut self, seen: &mut Vec<String>, once: &[&str], kw: &str, block: &str) {
+        if !once.contains(&kw) {
+            return;
+        }
+        if seen.iter().any(|k| k == kw) {
+            self.err(format!(
+                "`{}` is set more than once in {}; a field may appear only once",
+                kw, block
+            ));
+        } else {
+            seen.push(kw.to_string());
+        }
     }
 
     fn warn_at(&mut self, line: usize, col: usize, msg: impl Into<String>) {
@@ -436,11 +479,13 @@ impl Parser {
         if !self.expect(&Tok::LBrace, "to open the resources block") {
             return r;
         }
+        let mut seen: Vec<String> = Vec::new();
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("resources") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_RESOURCES, &kw, &String::from("`resources`"));
             match kw.as_str() {
                 "vcpu" | "gpu" => {
                     self.bump();
@@ -543,7 +588,9 @@ impl Parser {
     /// Recover inside a block: advance to the next token that could begin
     /// a new field, or to the closing brace.
     fn skip_to_block_item(&mut self) {
-        if !self.at_eof() {
+        // Always make progress, but if we are sitting on `{`, let the loop
+        // below consume the whole brace block instead of stopping inside it.
+        if !self.at_eof() && !matches!(self.peek().tok, Tok::LBrace) {
             self.bump();
         }
         let mut depth = 0i32;
@@ -570,11 +617,7 @@ impl Parser {
 
     fn unknown_field(&mut self, field: &str, block: &str) {
         let (l, c) = (self.peek().line, self.peek().col);
-        self.diags.push(Diag::error(
-            l,
-            c,
-            format!("unknown field or block `{}` in `{}`", field, block),
-        ));
+        self.err_at(l, c, format!("unknown field or block `{}` in `{}`", field, block));
         self.skip_to_block_item();
     }
 
@@ -608,11 +651,13 @@ impl Parser {
             line: open.line,
             col: open.col,
         };
+        let mut seen: Vec<String> = Vec::new();
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("policy") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_POLICY, &kw, &format!("policy `{}`", p.name));
             match kw.as_str() {
                 "residency" => {
                     self.bump();
@@ -690,11 +735,14 @@ impl Parser {
             col: open.col,
         };
 
+        let mut seen: Vec<String> = Vec::new();
+
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("workload") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_WORKLOAD, &kw, &format!("workload `{}`", w.name));
             match kw.as_str() {
                 "profile" => {
                     self.bump();
@@ -749,11 +797,13 @@ impl Parser {
             return None;
         }
         let mut d = DataDecl { name, sensitivity: None, residency: None, keys: None, line, col };
+        let mut seen: Vec<String> = Vec::new();
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("data") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_DATA, &kw, &format!("data `{}`", d.name));
             match kw.as_str() {
                 "sensitivity" => {
                     self.bump();
@@ -809,11 +859,13 @@ impl Parser {
             line,
             col,
         };
+        let mut seen: Vec<String> = Vec::new();
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("service") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_SERVICE, &kw, &format!("service `{}`", s.name));
             match kw.as_str() {
                 "image" => {
                     self.bump();
@@ -961,11 +1013,13 @@ impl Parser {
             line,
             col,
         };
+        let mut seen: Vec<String> = Vec::new();
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("job") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_JOB, &kw, &format!("job `{}`", j.name));
             match kw.as_str() {
                 "image" => {
                     self.bump();
@@ -1036,11 +1090,13 @@ impl Parser {
             line: open.line,
             col: open.col,
         };
+        let mut seen: Vec<String> = Vec::new();
         while !self.at_eof() && !matches!(self.peek().tok, Tok::RBrace) {
             let kw = match self.next_field_keyword("offer") {
                 Some(k) => k,
                 None => continue,
             };
+            self.check_once(&mut seen, &ONCE_OFFER, &kw, &format!("offer `{}`", o.id));
             match kw.as_str() {
                 "vendor" => {
                     self.bump();

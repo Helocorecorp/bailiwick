@@ -3,6 +3,10 @@
 
 use crate::diag::Diag;
 
+/// The largest number literal accepted: 2^53, the last integer every
+/// f64 (and every JSON reader that uses doubles) represents exactly.
+pub const MAX_NUMBER: f64 = 9_007_199_254_740_992.0;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tok {
     Ident(String),
@@ -187,6 +191,16 @@ pub fn lex(src: &str) -> Result<Vec<Token>, Diag> {
             let val: f64 = s.parse().map_err(|_| {
                 Diag::error(start_line, start_col, format!("invalid number `{}`", s))
             })?;
+            // Above 2^53 an f64 no longer holds every integer, and JSON
+            // readers that use doubles would see a different number than
+            // the one written. No real requirement comes close.
+            if val > MAX_NUMBER {
+                return Err(Diag::error(
+                    start_line,
+                    start_col,
+                    format!("number `{}` is too large (the largest is {})", s, MAX_NUMBER as u64),
+                ));
+            }
             out.push(Token { tok: Tok::Num(val), line: start_line, col: start_col });
             continue;
         }
